@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { nav, site } from "@/content/site";
 import Image from "next/image";
 import { MobileMenu } from "./MobileMenu";
+import { CartButton } from "@/components/cart/CartButton";
 
 export function Header() {
   const pathname = usePathname();
@@ -72,12 +73,15 @@ export function Header() {
             >
               Kostenloses Erstgespräch
             </Link>
+            <CartButton className="-mr-2" />
           </nav>
 
+          <div className="relative z-[60] flex items-center md:hidden">
+          <CartButton />
           <button
             ref={toggleRef}
             type="button"
-            className="relative z-[60] flex h-12 w-12 items-center justify-center md:hidden"
+            className="flex h-12 w-12 items-center justify-center"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Menü schließen" : "Menü öffnen"}
@@ -88,6 +92,7 @@ export function Header() {
               <span className={`absolute left-0 h-px w-full bg-current transition-all duration-500 ${open ? "top-1/2 -rotate-45" : "bottom-0"}`} />
             </span>
           </button>
+          </div>
         </div>
       </header>
       <MobileMenu open={open} onClose={closeMenu} />

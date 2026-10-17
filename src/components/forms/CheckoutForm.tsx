@@ -4,28 +4,25 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { euro, quote, VAT_RATE } from "@/lib/checkout/pricing";
+import { euro, VAT_RATE } from "@/lib/checkout/pricing";
+import { useCart } from "@/components/cart/CartProvider";
 import { checkoutSchema, flattenCheckoutErrors, type CheckoutFieldErrors } from "@/lib/checkout/schema";
-import type { Service } from "@/content/services";
 
-type Props = { slug: string; title: string; teaser: string; booking: NonNullable<Service["booking"]> };
 type Api = { ok: true; url: string } | { ok: false; code: string; message: string; fieldErrors?: CheckoutFieldErrors };
 
 const input = "w-full border-0 border-b border-ink/30 bg-transparent px-0 py-3 text-base text-inherit focus:border-rose-deep focus:outline-none focus:ring-0 transition-colors";
 const label = "block text-[0.72rem] font-medium uppercase tracking-[0.22em]";
 
 /** Eigene Buchungsseite: Kundendaten (Name, Anschrift) → dann Weiterleitung zur sicheren Zahlung bei Stripe. */
-export function CheckoutForm({ slug, title, teaser, booking }: Props) {
+export function CheckoutForm() {
   const uid = useId();
   const params = useSearchParams();
-  const startQty = Math.min(Math.max(Number(params.get("anzahl")) || 1, 1), booking.maxQuantity);
-  const [quantity, setQuantity] = useState(startQty);
+  const { items, quote: q, setOpen } = useCart();
   const [errors, setErrors] = useState<CheckoutFieldErrors>({});
   const [globalError, setGlobalError] = useState(params.get("zahlung") === "abgebrochen" ? "Die Zahlung wurde abgebrochen – es wurde nichts abgebucht. Du kannst es jederzeit erneut versuchen." : "");
   const [busy, setBusy] = useState(false);
   const tokenRef = useRef("");
   const formRef = useRef<HTMLFormElement>(null);
-  const q = quote(booking, quantity);
 
   const loadToken = useCallback(async () => {
     try {
@@ -46,8 +43,7 @@ export function CheckoutForm({ slug, title, teaser, booking }: Props) {
     if (!tokenRef.current) await loadToken();
     const s = (k: string) => String(fd.get(k) ?? "");
     const payload = {
-      slug,
-      quantity,
+      items,
       firstName: s("firstName"),
       lastName: s("lastName"),
       company: s("company"),
@@ -63,6 +59,10 @@ export function CheckoutForm({ slug, title, teaser, booking }: Props) {
       token: tokenRef.current,
     };
 
+    if (!q) {
+      setGlobalError("Dein Warenkorb ist leer.");
+      return;
+    }
     const local = checkoutSchema.safeParse(payload);
     if (!local.success) {
       const fe = flattenCheckoutErrors(local.error);
@@ -102,6 +102,18 @@ export function CheckoutForm({ slug, title, teaser, booking }: Props) {
         {errors[name]}
       </p>
     ) : null;
+
+  if (!q || items.length === 0) {
+    return (
+      <div className="mx-auto max-w-xl py-10 text-center">
+        <p className="script text-7xl text-rose-deep">Noch leer</p>
+        <p className="lead mt-6">Dein Warenkorb ist leer. Wähle ein Coaching und lege es in den Warenkorb.</p>
+        <Link href="/coaching" className="mt-8 inline-block rounded-full bg-ink px-8 py-4 text-[0.8125rem] uppercase tracking-[0.18em] text-bone transition-colors hover:bg-rose-deep">
+          Coachings ansehen
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-14 lg:grid-cols-12">
@@ -199,7 +211,7 @@ export function CheckoutForm({ slug, title, teaser, booking }: Props) {
           <Button type="submit" disabled={busy}>
             {busy ? "Weiter zur Zahlung …" : "Weiter zur Zahlung"}
           </Button>
-          <Link href={`/kontakt?thema=${slug}#anfrage`} className="link-line text-sm">
+          <Link href="/kontakt?thema=erstgespraech#anfrage" className="link-line text-sm">
             Lieber Rechnung oder Ratenzahlung? Zur Anfrage
           </Link>
         </div>
@@ -217,34 +229,26 @@ export function CheckoutForm({ slug, title, teaser, booking }: Props) {
       <aside aria-label="Deine Bestellung" className="lg:col-span-4 lg:col-start-9">
         <div className="on-dark top-28 bg-mocha p-8 text-bone lg:sticky md:p-10">
           <p className="eyebrow mb-5">Deine Bestellung</p>
-          <h2 className="font-display text-4xl font-light leading-tight">{title}</h2>
-          <p className="mt-3 text-sm text-bone/80">{teaser}</p>
+          <ul role="list" className="divide-y divide-bone/15">
+            {q.lines.map((l) => (
+              <li key={l.slug} className="py-4 first:pt-0">
+                <p className="font-display text-2xl font-light leading-tight">{l.title}</p>
+                <p className="mt-1 flex justify-between gap-4 text-sm text-bone/80">
+                  <span>
+                    {l.quantity} × {euro(l.unitNetCents)} netto
+                  </span>
+                  <span>{euro(l.netCents)}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+          <button type="button" onClick={() => setOpen(true)} className="link-line mt-3 text-[0.78rem] uppercase tracking-[0.18em] text-bone/80 hover:text-bone">
+            Warenkorb bearbeiten
+          </button>
 
-          {booking.maxQuantity > 1 && (
-            <div className="mt-6">
-              <label htmlFor={`${uid}-qty`} className="block text-[0.72rem] uppercase tracking-[0.22em] text-rose">
-                Anzahl ({booking.unit})
-              </label>
-              <select
-                id={`${uid}-qty`}
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                className="mt-2 w-full cursor-pointer border-0 border-b border-bone/40 bg-transparent py-2 text-base text-bone focus:border-rose focus:outline-none focus:ring-0 [&>option]:text-ink"
-              >
-                {Array.from({ length: booking.maxQuantity }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          <dl className="mt-8 divide-y divide-bone/15 border-y border-bone/15 text-[0.95rem]">
+          <dl className="mt-6 divide-y divide-bone/15 border-y border-bone/15 text-[0.95rem]">
             <div className="flex justify-between gap-4 py-3">
-              <dt>
-                {quantity} × {euro(booking.netCents)} netto
-              </dt>
+              <dt>Zwischensumme (netto)</dt>
               <dd>{euro(q.netCents)}</dd>
             </div>
             <div className="flex justify-between gap-4 py-3">

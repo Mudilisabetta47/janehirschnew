@@ -36,10 +36,10 @@ export const redirects: Redirect[] = [
 
   { source: "/privacy-policy{/}?", destination: "/datenschutz", note: "Alter Text stammte vom Theme-Hersteller" },
 
-  // WooCommerce: Shop wird nicht nachgebaut → Angebotsübersicht
-  { source: "/shop{/}?", destination: "/coaching", note: "Shop entfällt" },
-  { source: "/warenkorb{/}?", destination: "/coaching", note: "Shop entfällt" },
-  { source: "/checkout{/}?", destination: "/coaching", note: "Shop entfällt" },
+  // WooCommerce: Warenkorb/Kasse existieren neu unter /kasse; Shop-Übersicht → Angebote
+  { source: "/shop{/}?", destination: "/coaching", note: "Shop → Angebotsübersicht" },
+  { source: "/warenkorb{/}?", destination: "/kasse", note: "Alter WooCommerce-Warenkorb → neue Kasse" },
+  { source: "/checkout{/}?", destination: "/kasse", note: "Alte WooCommerce-Kasse → neue Kasse" },
   { source: "/my-account{/}?", destination: "/coaching", note: "Shop entfällt" },
   { source: "/product/:slug*", destination: "/coaching", note: "Übrige Produkte" },
   { source: "/product-category/:slug*", destination: "/coaching" },

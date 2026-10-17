@@ -14,7 +14,7 @@ const ok = (cond, label, extra = "") => {
 const get = (path, init = {}) => fetch(BASE + path, { redirect: "manual", ...init });
 
 // 1) Seiten liefern 200 + sinnvolle SEO-Grundlagen
-const pages = ["/", "/coaching", ...services.map((s) => `/coaching/${s.slug}`), "/ueber-mich", "/kontakt", "/impressum", "/datenschutz", "/agb", "/buchen/einzelcoaching"];
+const pages = ["/", "/coaching", ...services.map((s) => `/coaching/${s.slug}`), "/ueber-mich", "/kontakt", "/impressum", "/datenschutz", "/agb", "/kasse"];
 for (const p of pages) {
   const res = await get(p);
   const html = await res.text();
@@ -51,7 +51,7 @@ ok(!home.headers.has("x-powered-by"), "kein X-Powered-By");
 const robots = await (await get("/robots.txt")).text();
 ok(/User-Agent/i.test(robots), "robots.txt vorhanden");
 const sitemap = await (await get("/sitemap.xml")).text();
-ok(pages.filter((p) => !["/impressum", "/datenschutz", "/agb", "/buchen/einzelcoaching"].includes(p)).every((p) => sitemap.includes(`${p === "/" ? "" : p}</loc>`)), "sitemap.xml enthält alle Seiten");
+ok(pages.filter((p) => !["/impressum", "/datenschutz", "/agb", "/kasse"].includes(p)).every((p) => sitemap.includes(`${p === "/" ? "" : p}</loc>`)), "sitemap.xml enthält alle Seiten");
 
 // 6) Kontakt-API
 const tokenRes = await get("/api/contact/token");
@@ -80,7 +80,7 @@ ok(goodJson.mode === "dry-run" || process.env.ALLOW_SEND === "true", "API: läuf
 const co = await get("/api/checkout", {
   method: "POST",
   headers: { "content-type": "application/json", origin: BASE },
-  body: JSON.stringify({ slug: "einzelcoaching", quantity: 1, accepted: true }),
+  body: JSON.stringify({ items: [{ slug: "einzelcoaching", quantity: 1 }], accepted: true }),
 });
 ok([503, 200].includes(co.status), "API /api/checkout reagiert (503 ohne Schlüssel)", `status=${co.status}`);
 ok((await get("/api/checkout")).status === 405, "API /api/checkout: GET → 405");

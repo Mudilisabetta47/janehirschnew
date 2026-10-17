@@ -10,9 +10,9 @@ export function buildBookingMessage(session: Stripe.Checkout.Session) {
   const cd = session.customer_details;
   const addr = cd?.address;
   const wunsch = md.wish;
-  const subject = headerSafe(`Neue bezahlte Buchung: ${md.slug ?? "Coaching"} – ${cd?.name ?? "Kunde"}`);
+  const subject = headerSafe(`Neue bezahlte Buchung: ${(md.items ?? "Coaching").split(",").map((i) => i.split(":")[0]).join(", ")} – ${md.name ?? cd?.name ?? "Kunde"}`);
   const lines = [
-    `Angebot:       ${md.slug ?? "?"}  (Anzahl: ${md.quantity ?? "?"})`,
+    `Bestellung:    ${(md.items ?? "?").split(",").map((i) => i.replace(":", " × ")).join(" | ")}`,
     `Betrag brutto: ${euro(session.amount_total ?? 0)}  (netto ${euro(Number(md.net_cents ?? 0))}, MwSt. ${euro(Number(md.vat_cents ?? 0))})`,
     `Zahlstatus:    ${session.payment_status}`,
     "",

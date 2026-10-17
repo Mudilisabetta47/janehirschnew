@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type Stripe from "stripe";
-import { quote } from "@/lib/checkout/pricing";
+import { quote, quoteCart } from "@/lib/checkout/pricing";
+import { sanitizeCart } from "@/components/cart/cartStore";
+import { getService } from "@/content/services";
 import { createToken } from "@/lib/contact/token";
 import { handleCheckout } from "@/lib/checkout/handler";
 import { handleStripeWebhook } from "@/lib/checkout/webhook";
@@ -27,8 +29,7 @@ const fakeStripe = () => {
 
 /** Gültige Buchungsdaten inkl. Zeit-Token (10 s alt). */
 const valid = (over: Record<string, unknown> = {}) => ({
-  slug: "einzelcoaching",
-  quantity: 1,
+  items: [{ slug: "einzelcoaching", quantity: 1 }],
   firstName: "Anna",
   lastName: "Beispiel",
   company: "",
@@ -76,7 +77,7 @@ describe("handleCheckout", () => {
   });
   it("legt Kunde mit Name und Anschrift an und erstellt die Sitzung mit serverseitigem Betrag", async () => {
     const { create, customer, stripe } = fakeStripe();
-    const res = await handleCheckout(req(valid({ slug: "gruppencoaching", quantity: 2, company: "Salon Test", vatId: "de123456789" })), { stripe });
+    const res = await handleCheckout(req(valid({ items: [{ slug: "gruppencoaching", quantity: 2 }, { slug: "saloncoaching", quantity: 1 }], company: "Salon Test", vatId: "de123456789" })), { stripe });
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ ok: true, url: "https://checkout.stripe.com/c/pay/cs_test_123" });
     expect(customer.mock.calls[0]![0]).toMatchObject({
@@ -87,8 +88,11 @@ describe("handleCheckout", () => {
     });
     const p = create.mock.calls[0]![0];
     expect(p.customer).toBe("cus_123");
+    expect(p.line_items).toHaveLength(2);
     expect(p.line_items?.[0]).toMatchObject({ quantity: 2, price_data: { currency: "eur", unit_amount: 106981 } });
-    expect(p.metadata).toMatchObject({ slug: "gruppencoaching", quantity: "2", net_cents: "179800", name: "Anna Beispiel", company: "Salon Test" });
+    expect(p.line_items?.[1]).toMatchObject({ quantity: 1, price_data: { unit_amount: 142800 } });
+    expect(p.metadata).toMatchObject({ items: "gruppencoaching:2,saloncoaching:1", net_cents: "299800", name: "Anna Beispiel", company: "Salon Test" });
+    expect(p.cancel_url).toContain("/kasse");
     expect(p.success_url).toContain("{CHECKOUT_SESSION_ID}");
   });
   it("nutzt ohne Firma den vollständigen Namen", async () => {
@@ -102,11 +106,13 @@ describe("handleCheckout", () => {
     expect(create.mock.calls[0]![0].line_items?.[0]).toMatchObject({ price_data: { unit_amount: 106981 } });
   });
   it.each<[Record<string, unknown>, string]>([
-    [{ slug: "online-coaching" }, "nicht buchbares Angebot"],
-    [{ quantity: 2 }, "zu große Menge"],
+    [{ items: [{ slug: "online-coaching", quantity: 1 }] }, "nicht buchbares Angebot"],
+    [{ items: [{ slug: "einzelcoaching", quantity: 2 }] }, "zu große Menge"],
+    [{ items: [{ slug: "einzelcoaching", quantity: 1 }, { slug: "einzelcoaching", quantity: 1 }] }, "doppelte Position"],
+    [{ items: [] }, "leerer Warenkorb"],
     [{ accepted: false }, "AGB nicht akzeptiert"],
-    [{ quantity: -1 }, "negative Menge"],
-    [{ quantity: 1.5 }, "Kommazahl"],
+    [{ items: [{ slug: "einzelcoaching", quantity: -1 }] }, "negative Menge"],
+    [{ items: [{ slug: "einzelcoaching", quantity: 1.5 }] }, "Kommazahl"],
     [{ firstName: "" }, "Vorname fehlt"],
     [{ lastName: "A" }, "Nachname zu kurz"],
     [{ street: "" }, "Straße fehlt"],
@@ -163,8 +169,37 @@ describe("handleCheckout", () => {
   });
 });
 
+describe("Warenkorb", () => {
+  it("quoteCart summiert Positionen und lehnt Ungültiges ab", () => {
+    const q = quoteCart([{ slug: "einzelcoaching", quantity: 1 }, { slug: "watch-and-learn", quantity: 2 }], getService)!;
+    expect(q.netCents).toBe(89900 + 2 * 44900);
+    expect(q.vatCents + q.netCents).toBe(q.grossCents);
+    expect(quoteCart([], getService)).toBeNull();
+    expect(quoteCart([{ slug: "online-coaching", quantity: 1 }], getService)).toBeNull();
+    expect(quoteCart([{ slug: "einzelcoaching", quantity: 9 }], getService)).toBeNull();
+  });
+  it("sanitizeCart verwirft Manipuliertes im Speicher und begrenzt Mengen", () => {
+    expect(sanitizeCart("müll")).toEqual([]);
+    expect(
+      sanitizeCart([
+        { slug: "gruppencoaching", quantity: 99 },
+        { slug: "gruppencoaching", quantity: 1 },
+        { slug: "gibts-nicht", quantity: 1 },
+        { slug: "online-coaching", quantity: 1 },
+        { slug: "saloncoaching", quantity: "2" },
+        { slug: "einzelcoaching", quantity: 1.5 },
+        null,
+        { slug: "watch-and-learn", quantity: 0 },
+      ]),
+    ).toEqual([
+      { slug: "gruppencoaching", quantity: 5 },
+      { slug: "watch-and-learn", quantity: 1 },
+    ]);
+  });
+});
+
 describe("Stripe-Webhook", () => {
-  const session = { id: "cs_1", payment_status: "paid", amount_total: 106981, metadata: { slug: "einzelcoaching", quantity: "1", net_cents: "89900", vat_cents: "17081" }, customer_details: { name: "Anna\nBcc: x@y.de", email: "a@b.de" } } as unknown as Stripe.Checkout.Session;
+  const session = { id: "cs_1", payment_status: "paid", amount_total: 106981, metadata: { items: "einzelcoaching:1", net_cents: "89900", vat_cents: "17081" }, customer_details: { name: "Anna\nBcc: x@y.de", email: "a@b.de" } } as unknown as Stripe.Checkout.Session;
   const hook = (event: unknown, throws = false) => ({ webhooks: { constructEvent: vi.fn(() => { if (throws) throw new Error("bad sig"); return event; }) } }) as unknown as Pick<Stripe, "webhooks">;
   const wreq = (sig: string | null = "t=1,v1=abc") => new Request("https://a.de/api/stripe/webhook", { method: "POST", headers: sig ? { "stripe-signature": sig } : {}, body: "{}" });
 

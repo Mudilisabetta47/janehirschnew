@@ -3,7 +3,7 @@ import { getService } from "@/content/services";
 import { clientKey, isSameOrigin } from "@/lib/contact/handler";
 import { getConfig as getContactConfig, getSecret } from "@/lib/contact/config";
 import { verifyToken } from "@/lib/contact/token";
-import { euro, quote, VAT_RATE } from "./pricing";
+import { euro, quoteCart, VAT_RATE } from "./pricing";
 import { checkoutSchema, flattenCheckoutErrors, type CheckoutFieldErrors } from "./schema";
 import { getCheckoutConfig, getCheckoutLimiter, getStripe } from "./config";
 
@@ -58,14 +58,11 @@ export async function handleCheckout(request: Request, deps: Deps = {}): Promise
   if (tokenState === "too-fast") return fail(400, "too-fast", "Das ging sehr schnell – bitte versuche es in ein paar Sekunden noch einmal.");
   if (tokenState !== "ok") return fail(400, "token", "Die Sicherheitsprüfung ist abgelaufen. Bitte lade die Seite neu.");
 
-  const service = getService(d.slug);
-  if (!service?.booking) return fail(422, "validation", "Dieses Angebot ist nicht online buchbar.");
-  if (d.quantity > service.booking.maxQuantity)
-    return fail(422, "validation", `Online sind höchstens ${service.booking.maxQuantity} buchbar.`, { fieldErrors: { quantity: `Höchstens ${service.booking.maxQuantity}.` } });
-
-  const q = quote(service.booking, d.quantity);
+  const q = quoteCart(d.items, getService);
+  if (!q) return fail(422, "validation", "Der Warenkorb enthält ungültige Positionen oder zu große Mengen.", { fieldErrors: { items: "Bitte prüfe deinen Warenkorb." } });
   const stripe = deps.stripe ?? getStripe();
   const fullName = `${d.firstName} ${d.lastName}`;
+  const itemsMeta = q.lines.map((l) => `${l.slug}:${l.quantity}`).join(",");
   const vatId = d.vatId.toUpperCase();
 
   try {
@@ -89,24 +86,22 @@ export async function handleCheckout(request: Request, deps: Deps = {}): Promise
       mode: "payment",
       locale: "de",
       customer: customer.id,
-      line_items: [
-        {
-          quantity: q.quantity,
-          price_data: {
-            currency: "eur",
-            unit_amount: q.unitGrossCents,
-            product_data: {
-              name: `${service.title} – Jane Hirsch`,
-              description: `${euro(service.booking.netCents)} netto + ${Math.round(VAT_RATE * 100)} % MwSt. je ${service.booking.unit}`,
-            },
+      line_items: q.lines.map((l) => ({
+        quantity: l.quantity,
+        price_data: {
+          currency: "eur" as const,
+          unit_amount: l.unitGrossCents,
+          product_data: {
+            name: `${l.title} – Jane Hirsch`,
+            description: `${euro(l.unitNetCents)} netto + ${Math.round(VAT_RATE * 100)} % MwSt. je ${l.unit}`,
           },
         },
-      ],
+      })),
       invoice_creation: {
         enabled: true,
         invoice_data: {
-          description: `${service.title}, ${q.quantity} × ${service.booking.unit}`,
-          metadata: { slug: service.slug },
+          description: q.lines.map((l) => `${l.title}, ${l.quantity} × ${l.unit}`).join("; ").slice(0, 400),
+          metadata: { items: itemsMeta },
           ...(invoiceFields.length ? { custom_fields: invoiceFields } : {}),
         },
       },
@@ -114,8 +109,7 @@ export async function handleCheckout(request: Request, deps: Deps = {}): Promise
         submit: { message: `Mit der Zahlung akzeptierst du die [AGB](${cfg.siteUrl}/agb). Preise: ${euro(q.netCents)} netto + ${euro(q.vatCents)} MwSt.` },
       },
       metadata: {
-        slug: service.slug,
-        quantity: String(q.quantity),
+        items: itemsMeta,
         net_cents: String(q.netCents),
         vat_cents: String(q.vatCents),
         name: fullName,
@@ -124,7 +118,7 @@ export async function handleCheckout(request: Request, deps: Deps = {}): Promise
         ...(d.wish ? { wish: d.wish } : {}),
       },
       success_url: `${cfg.siteUrl}/buchung/erfolg?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${cfg.siteUrl}/buchen/${service.slug}?anzahl=${q.quantity}&zahlung=abgebrochen`,
+      cancel_url: `${cfg.siteUrl}/kasse?zahlung=abgebrochen`,
     });
     if (!session.url) return fail(502, "no-url", "Die Zahlungsseite konnte nicht geöffnet werden. Bitte nutze die Anfrage.");
     return { status: 200, body: { ok: true, url: session.url } };

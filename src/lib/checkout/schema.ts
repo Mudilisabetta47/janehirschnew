@@ -19,8 +19,16 @@ const optional = (max: number) =>
 
 /** Gemeinsames Schema für das Buchungsformular (Browser) und den Server. Preise kommen nie vom Client. */
 export const checkoutSchema = z.object({
-  slug: z.enum(bookable, { error: "Dieses Angebot ist nicht online buchbar." }),
-  quantity: z.number({ error: "Bitte gib eine Anzahl an." }).int("Bitte gib eine ganze Zahl an.").min(1, "Mindestens 1.").max(20, "Zu viele."),
+  items: z
+    .array(
+      z.object({
+        slug: z.enum(bookable, { error: "Dieses Angebot ist nicht online buchbar." }),
+        quantity: z.number({ error: "Bitte gib eine Anzahl an." }).int("Bitte gib eine ganze Zahl an.").min(1, "Mindestens 1.").max(20, "Zu viele."),
+      }),
+      { error: "Dein Warenkorb ist leer." },
+    )
+    .min(1, "Dein Warenkorb ist leer.")
+    .max(6, "Zu viele Positionen."),
   firstName: text(2, 60, "Bitte gib deinen Vornamen an."),
   lastName: text(2, 60, "Bitte gib deinen Nachnamen an."),
   company: optional(100),

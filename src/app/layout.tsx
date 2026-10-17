@@ -4,6 +4,7 @@ import "./globals.css";
 import { site } from "@/content/site";
 import { noindex } from "@/lib/seo";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { CartProvider } from "@/components/cart/CartProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/JsonLd";
@@ -59,9 +60,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Zum Inhalt springen
         </a>
         <MotionProvider>
-          <Header />
-          <main id="inhalt">{children}</main>
-          <Footer />
+          <CartProvider>
+            <Header />
+            <main id="inhalt">{children}</main>
+            <Footer />
+          </CartProvider>
         </MotionProvider>
         <JsonLd data={[websiteLd(), personLd()]} />
       </body>

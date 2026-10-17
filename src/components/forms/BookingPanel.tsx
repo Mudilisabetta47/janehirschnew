@@ -1,7 +1,9 @@
 "use client";
 
 import { useId, useState } from "react";
-import { ButtonLink } from "@/components/ui/Button";
+import { useRouter } from "next/navigation";
+import { Button, ButtonLink } from "@/components/ui/Button";
+import { useCart } from "@/components/cart/CartProvider";
 import { euro, quote, VAT_RATE } from "@/lib/checkout/pricing";
 import type { Service } from "@/content/services";
 
@@ -10,6 +12,8 @@ type Props = { slug: string; title: string; booking: NonNullable<Service["bookin
 /** Preisübersicht auf der Angebotsseite → führt zur eigenen Buchungsseite /buchen/[angebot]. */
 export function BookingPanel({ slug, title, booking }: Props) {
   const uid = useId();
+  const router = useRouter();
+  const { add } = useCart();
   const [quantity, setQuantity] = useState(1);
   const q = quote(booking, quantity);
 
@@ -20,7 +24,7 @@ export function BookingPanel({ slug, title, booking }: Props) {
         <h2 id="buchen-title" className="display-m mb-6">
           {title} online buchen
         </h2>
-        <p className="lead">Auf der nächsten Seite gibst du deine Daten ein und zahlst sicher über Stripe. Die Rechnung kommt per E-Mail, den Termin stimmen wir danach persönlich ab.</p>
+        <p className="lead">Lege das Coaching in den Warenkorb oder buche sofort. Du gibst deine Daten ein und zahlst sicher über Stripe. Die Rechnung kommt per E-Mail, den Termin stimmen wir danach persönlich ab.</p>
       </div>
 
       <div className="lg:col-span-6 lg:col-start-7">
@@ -62,8 +66,21 @@ export function BookingPanel({ slug, title, booking }: Props) {
         )}
 
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-          <ButtonLink href={`/buchen/${slug}?anzahl=${quantity}`}>Jetzt buchen</ButtonLink>
-          <ButtonLink href={`/kontakt?thema=${slug}#anfrage`} variant="outline" arrow={false}>
+          <Button type="button" onClick={() => add(slug, quantity, true)}>
+            In den Warenkorb
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            arrow={false}
+            onClick={() => {
+              add(slug, quantity, false);
+              router.push("/kasse");
+            }}
+          >
+            Sofort buchen
+          </Button>
+          <ButtonLink href={`/kontakt?thema=${slug}#anfrage`} variant="ghost" arrow={false} className="!border-0 !px-0 !text-ink underline underline-offset-4">
             Lieber Anfrage / Raten
           </ButtonLink>
         </div>

@@ -37,6 +37,11 @@ Inhalte stehen getrennt vom Layout: Texte/Preise ändern = nur `src/content/*.ts
 
 Grenzen: Das Rate-Limit liegt im Prozessspeicher. Bei mehreren Instanzen/Serverless → Redis/Upstash ergänzen. Hinter einem Reverse-Proxy `TRUST_PROXY=true` setzen, damit die Client-IP aus `X-Forwarded-For` gelesen wird (nur wenn der Proxy den Header überschreibt!).
 
+## Warenkorb & Checkout
+- Warenkorb im Browser (`localStorage`, nur Angebots-Kennung + Menge, beim Laden gegen die Inhalte geprüft). Header-Button mit Zähler, Schublade, Kasse unter `/kasse`.
+- Preise werden **nie** vom Client übernommen: `/api/checkout` berechnet alles aus `src/content/services.ts` (`quoteCart`), legt den Stripe-Kunden mit Name/Anschrift an und erzeugt die Zahlungssitzung. Webhook `/api/stripe/webhook` benachrichtigt Jane nach bezahlter Sitzung.
+- Aus, bis `STRIPE_SECRET_KEY` gesetzt ist; Anzeige der Buchung per `NEXT_PUBLIC_CHECKOUT_ENABLED`.
+
 ## Sicherheits-Header
 CSP (nur eigene Quellen, kein Drittanbieter), HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy; `X-Powered-By` entfernt.
 

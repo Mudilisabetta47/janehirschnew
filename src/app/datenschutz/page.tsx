@@ -33,7 +33,7 @@ export default function PrivacyPage() {
 
       <h2>2. Das Wichtigste in Kürze</h2>
       <ul>
-        <li>Diese Website setzt <strong>keine Cookies</strong> und <strong>keine Analyse- oder Marketing-Werkzeuge</strong> ein.</li>
+        <li>Diese Website setzt <strong>keine Cookies</strong> und <strong>keine Analyse- oder Marketing-Werkzeuge</strong> ein. Der Warenkorb merkt sich deine Auswahl nur lokal in deinem Browser.</li>
         <li>Schriften werden vom eigenen Server ausgeliefert – es werden keine Daten an Google Fonts oder andere Schriftanbieter übertragen.</li>
         <li>Personenbezogene Daten verarbeite ich nur, wenn du mir schreibst (Kontaktformular, E-Mail, Telefon) und für den technisch notwendigen Betrieb der Seite.</li>
       </ul>
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
 
       <h2>7. Cookies und Tracking</h2>
       <p>
-        Diese Website setzt keine Cookies und speichert keine Informationen im Endgerät. Beim Wechsel zur Bezahlseite von Stripe (Abschnitt 5) gelten dort die Cookie- und Datenschutzbestimmungen von Stripe.
+        Diese Website setzt keine Cookies. Nur wenn du ein Coaching in den Warenkorb legst, speichert dein Browser diese Auswahl (Angebot und Anzahl, keine Personendaten) lokal im Endgerät (localStorage). Das ist für die Warenkorb-Funktion technisch erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG) und wird nach der Bestellung bzw. beim Entfernen gelöscht; du kannst den Speicher jederzeit über die Browsereinstellungen löschen. Es gibt kein Tracking und keine Einwilligungsabfrage. Beim Wechsel zur Bezahlseite von Stripe (Abschnitt 5) gelten dort die Cookie- und Datenschutzbestimmungen von Stripe.
       </p>
 
       <h2>8. Links zu sozialen Netzwerken</h2>

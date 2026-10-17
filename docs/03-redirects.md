@@ -23,9 +23,9 @@ Diese Datei wird mit `npm run redirects:export` erzeugt – nicht von Hand ände
 | `/kontaktiere-mich` | `/kontakt` |  |
 | `/angebotsanfrage` | `/kontakt` | YITH-Anfrage ersetzt durch Kontaktformular |
 | `/privacy-policy` | `/datenschutz` | Alter Text stammte vom Theme-Hersteller |
-| `/shop` | `/coaching` | Shop entfällt |
-| `/warenkorb` | `/coaching` | Shop entfällt |
-| `/checkout` | `/coaching` | Shop entfällt |
+| `/shop` | `/coaching` | Shop → Angebotsübersicht |
+| `/warenkorb` | `/kasse` | Alter WooCommerce-Warenkorb → neue Kasse |
+| `/checkout` | `/kasse` | Alte WooCommerce-Kasse → neue Kasse |
 | `/my-account` | `/coaching` | Shop entfällt |
 | `/product/:slug*` | `/coaching` | Übrige Produkte |
 | `/product-category/:slug*` | `/coaching` |  |
