@@ -37,7 +37,7 @@ export function ServiceTiles({ heading = true, tone = "blush" }: { heading?: boo
               <StaggerItem as="li" key={s.slug}>
                 <Link
                   href={`/coaching/${s.slug}`}
-                  className="on-dark group relative isolate flex aspect-[4/5] flex-col justify-between overflow-hidden bg-mocha p-6 text-bone md:p-8 lg:aspect-[4/5] lg:p-10"
+                  className="on-dark group frame-inset relative isolate flex aspect-[4/5] flex-col justify-between overflow-hidden bg-mocha p-6 text-bone md:p-8 lg:aspect-[4/5] lg:p-10"
                 >
                   {img && (
                     <Image

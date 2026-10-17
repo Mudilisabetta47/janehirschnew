@@ -14,6 +14,8 @@ Die Website von Jane Hirsch soll sich anfühlen wie ein ruhiges Fotostudio kurz 
 
 ## Bildsprache
 - **Bogenfenster (Arch)** als wiederkehrende Form – steht für Spiegel, Tür, „großer Tag“.
+- **Galerie-Rahmen** für Fotos: feiner Innenrahmen mit Eckzeichen (`frame-inset`, „atmet“ beim Hover), bei Porträts zusätzlich versetzter Rosé-Linienrahmen und Lichtschein (`FramedImage`), Bögen mit Signatur-Zeile („mit Herz“).
+- **Emotion:** Zitat-Band „Meine Mission“ mit Janes eigenen Worten, dezentes Funkeln und wandernder Lichtschein (reine CSS, bei reduzierter Bewegung statisch), riesige Script-Wörter als Hintergrund.
 - Feine Linien („Haarsträhnen“) im Hero zeichnen sich beim Laden.
 - Rotierendes Textsiegel („Brautstyling · Coaching · Make-up · Hair“).
 - Filmkorn als statische Textur auf dunklen Flächen.

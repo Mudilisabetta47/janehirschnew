@@ -5,6 +5,7 @@ import { Statement } from "@/components/sections/Statement";
 import { ServiceTiles } from "@/components/sections/ServiceTiles";
 import { Expertise } from "@/components/sections/Expertise";
 import { PhotoBand } from "@/components/sections/PhotoBand";
+import { QuoteBand } from "@/components/sections/QuoteBand";
 import { AboutTeaser } from "@/components/sections/AboutTeaser";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { ResultsBand } from "@/components/sections/ResultsBand";
@@ -34,6 +35,7 @@ export default function HomePage() {
       <Expertise />
       <AboutTeaser />
       <Testimonials />
+      <QuoteBand />
       <ResultsBand />
       <CtaBand />
     </>

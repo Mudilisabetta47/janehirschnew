@@ -99,6 +99,26 @@
 .kenburns {
   animation: kenburns 26s ease-in-out infinite alternate;
 }
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.6) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotate(20deg);
+  }
+}
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(2.5%, -4%, 0);
+  }
+}
 @keyframes float {
   0%,
   100% {
@@ -268,7 +288,9 @@
     transition-duration: 0.01ms !important;
   }
   .marquee-track,
-  .kenburns {
+  .kenburns,
+  .sparkle,
+  .leak {
     animation: none !important;
   }
 }
@@ -301,4 +323,64 @@
 .legal a {
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------
+   Bilderrahmen: feiner Innenrahmen mit Eckzeichen, der beim Hover „atmet“.
+   Nutzung: Klasse `frame-inset` auf ein `relative`-Element mit Bild.
+   Abstand über --frame-gap. Für Bögen zusätzlich `arch` (Eckzeichen entfallen).
+------------------------------------------------------------------- */
+.frame-inset {
+  --frame-gap: 14px;
+  --frame-line: rgb(251 247 242 / 0.6);
+  --frame-accent: rgb(201 161 144);
+}
+.frame-inset::after {
+  content: "";
+  position: absolute;
+  inset: var(--frame-gap);
+  border: 1px solid var(--frame-line);
+  pointer-events: none;
+  z-index: 3;
+  transition:
+    inset 0.9s var(--ease-out-expo),
+    border-color 0.6s ease;
+}
+.frame-inset::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--frame-gap) - 5px);
+  pointer-events: none;
+  z-index: 3;
+  --c: var(--frame-accent);
+  background:
+    linear-gradient(var(--c), var(--c)) top left / 26px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) top left / 2px 26px no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / 26px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / 2px 26px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / 26px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / 2px 26px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 26px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 2px 26px no-repeat;
+  transition: inset 0.9s var(--ease-out-expo);
+}
+.frame-inset:hover::after,
+.frame-inset:focus-visible::after {
+  inset: calc(var(--frame-gap) - 7px);
+  border-color: var(--frame-accent);
+}
+.frame-inset:hover::before,
+.frame-inset:focus-visible::before {
+  inset: calc(var(--frame-gap) - 12px);
+}
+.frame-inset.arch::after {
+  border-radius: 999px 999px 0 0;
+}
+.frame-inset.arch::before {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .frame-inset {
+    --frame-gap: 20px;
+  }
 }

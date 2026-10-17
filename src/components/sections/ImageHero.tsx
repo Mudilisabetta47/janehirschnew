@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { SiteImage } from "@/content/images";
+import { LightLeak, Sparkles } from "@/components/ui/Sparkles";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 
 type Crumb = { label: string; href?: string };
@@ -26,7 +27,9 @@ export function ImageHero({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="on-dark grain relative isolate flex min-h-[82svh] items-end overflow-hidden bg-mocha text-bone md:min-h-[90svh]">
+    <section className="on-dark grain frame-inset relative isolate flex min-h-[82svh] items-end overflow-hidden bg-mocha text-bone [--frame-gap:12px] md:min-h-[90svh] md:[--frame-gap:22px]">
+      <LightLeak className="-left-[8%] top-[10%] h-[55vmin] w-[55vmin] bg-rose/20" />
+      <Sparkles />
       <Image
         src={image.src}
         alt={image.alt}

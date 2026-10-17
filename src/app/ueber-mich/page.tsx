@@ -8,6 +8,7 @@ import { Parallax } from "@/components/motion/Parallax";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { ImageSlot } from "@/components/ui/ImageSlot";
+import { FramedImage } from "@/components/ui/FramedImage";
 import { Monogram } from "@/components/ui/Monogram";
 import Image from "next/image";
 
@@ -29,7 +30,7 @@ export default function AboutPage() {
       />
 
       <section aria-label="Bildimpression" className="relative bg-mocha">
-        <div className="relative aspect-[16/10] w-full max-h-[85svh] overflow-hidden md:aspect-[16/8]">
+        <div className="frame-inset relative aspect-[16/10] w-full max-h-[85svh] overflow-hidden [--frame-gap:12px] md:aspect-[16/8] md:[--frame-gap:24px]">
           <Image src={images.duo.src} alt={images.duo.alt} fill priority sizes="100vw" className="object-cover object-[30%_30%] md:object-center" />
         </div>
       </section>
@@ -41,10 +42,10 @@ export default function AboutPage() {
         <div className="wrap grid gap-16 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <Parallax from={0} to={60} className="lg:sticky lg:top-32">
-              <div className="arch relative mx-auto aspect-[4/5] max-w-sm overflow-hidden">
+              <FramedImage shape="arch" className="mx-auto max-w-sm" caption="Jane">
                 <ImageSlot slot="about" tone="sand" sizes="(min-width:1024px) 24rem, 90vw" />
                 {!images.about && <Monogram className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 text-ink/70" />}
-              </div>
+              </FramedImage>
             </Parallax>
           </div>
 

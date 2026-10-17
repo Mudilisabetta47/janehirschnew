@@ -2,6 +2,7 @@ import { site } from "@/content/site";
 import { images } from "@/content/images";
 import { PhotoBackdrop } from "@/components/motion/PhotoBackdrop";
 import { BackdropWord } from "@/components/motion/BackdropWord";
+import { Sparkles } from "@/components/ui/Sparkles";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 import { ButtonLink } from "@/components/ui/Button";
@@ -20,7 +21,8 @@ export function CtaBand({
 }) {
   return (
     <Section tone="mocha" labelledBy="cta-title" className="grain isolate overflow-hidden text-center">
-      <PhotoBackdrop image={images.coaching} position="50% 40%" overlay={0.78} />
+      <PhotoBackdrop image={images.hero} position="50% 30%" overlay={0.78} />
+      <Sparkles />
       <BackdropWord text="Karriere" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-bone/[0.06]" from="-8%" to="8%" />
       <div className="wrap flex flex-col items-center">
         <Reveal>

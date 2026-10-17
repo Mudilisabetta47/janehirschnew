@@ -11,7 +11,7 @@ export function PhotoBand({ shots = [images.hero, images.coaching, images.about]
     <section aria-label="Eindrücke aus dem Brautstyling" className="bg-mocha">
       <div className="grid gap-px bg-bone/20 md:grid-cols-3">
         {shots.map((img, i) => (
-          <Reveal key={img.src} delay={i * 0.12} y={40} className="group relative aspect-[4/5] overflow-hidden md:aspect-auto md:h-[min(92svh,60rem)]">
+          <Reveal key={img.src} delay={i * 0.12} y={40} className="group frame-inset relative aspect-[4/5] overflow-hidden md:aspect-auto md:h-[min(92svh,60rem)]">
             <Image
               src={img.src}
               alt={img.alt}

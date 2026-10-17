@@ -4,13 +4,16 @@ import { ButtonLink } from "@/components/ui/Button";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 import { HeroBackdrop } from "./HeroBackdrop";
 import { HeroSeal } from "./HeroSeal";
+import { LightLeak, Sparkles } from "@/components/ui/Sparkles";
 import { StarRating } from "@/components/ui/StarRating";
 
 /** Vollbild-Hero: große Fotos als Hintergrund, Name + Signatur „Coaching“ darüber (wie auf der bisherigen Seite). */
 export function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="on-dark grain relative isolate flex min-h-[100svh] items-end overflow-hidden bg-mocha text-bone">
+    <section aria-labelledby="hero-title" className="on-dark grain frame-inset relative isolate flex min-h-[100svh] items-end overflow-hidden bg-mocha text-bone [--frame-gap:12px] md:[--frame-gap:22px]">
       <HeroBackdrop image={images.duo} />
+      <LightLeak className="-right-[10%] top-[8%] h-[60vmin] w-[60vmin] bg-rose/25" />
+      <Sparkles />
 
       <div className="wrap relative w-full pb-14 pt-36 lg:pb-20">
         <div className="max-w-4xl">

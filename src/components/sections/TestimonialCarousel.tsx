@@ -40,7 +40,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
       >
         {items.map((t, i) => (
           <li key={t.author + i} className="w-[84vw] max-w-[26rem] shrink-0 snap-start sm:w-[26rem]">
-            <figure className="flex h-full flex-col border border-ink/12 bg-bone p-8 md:p-10">
+            <figure className="frame-inset relative flex h-full flex-col border border-ink/12 bg-bone p-8 [--frame-accent:rgb(138_90_72)] [--frame-gap:9px] [--frame-line:rgb(201_161_144/0.5)] md:p-10">
               <div className="mx-auto mb-8 h-28 w-28 rounded-full bg-[conic-gradient(from_140deg,#c9a190,#8a5a48,#e9d6c8,#c9a190)] p-[3px]">
                 <div className="relative h-full w-full overflow-hidden rounded-full border-[3px] border-bone bg-blush">
                   {t.avatar ? (
