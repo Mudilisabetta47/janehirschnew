@@ -12,7 +12,7 @@
  *
  * Eintrag auf `null` setzen → die Fläche zeigt wieder die ruhige Tonwert-Komposition.
  */
-export type SiteImage = { src: string; alt: string; width: number; height: number };
+export type SiteImage = { src: string; alt: string; width: number; height: number; /** Bildausschnitt bei randlosem Zuschnitt (CSS object-position) */ position?: string };
 
 export const images = {
   /** Großes Querformat (S/W-Doppelbild): Hero der Startseite und Über-mich-Band */
@@ -40,6 +40,14 @@ export const images = {
     width: 1067,
     height: 1800,
   },
+  /** Querformat für den Kopf der Coaching-Übersicht */
+  overview: {
+    src: "/images/einzelcoaching.jpg",
+    alt: "Stylistin arbeitet an halb hochgesteckten Wellen im Studio",
+    width: 2000,
+    height: 1125,
+    position: "50% 40%",
+  },
   contact: {
     src: "/images/online-coaching.jpg",
     alt: "Lächelnde Frau mit Brille telefoniert am Laptop in einem Café",
@@ -49,40 +57,46 @@ export const images = {
   /** Foto je Angebot (Schlüssel = Slug in services.ts); fehlende Einträge zeigen keine Foto-Fläche. */
   services: {
     einzelcoaching: {
-      src: "/images/einzelcoaching.jpg",
-      alt: "Stylistin arbeitet an halb hochgesteckten Wellen im Studio",
+      src: "/images/duo.jpg",
+      alt: "Schwarz-Weiß-Doppelbild: links steckt die Stylistin einer Braut die Frisur, rechts die fertige Hochsteckfrisur mit Perlen im Profil",
       width: 2000,
       height: 1125,
+      position: "28% 30%",
     },
     gruppencoaching: {
       src: "/images/gruppencoaching.jpg",
       alt: "Live-Demonstration einer Frisur vor einer Gruppe aufmerksamer Teilnehmerinnen",
       width: 1200,
       height: 1600,
+      position: "50% 38%",
     },
     saloncoaching: {
       src: "/images/hero.jpg",
       alt: "Braut mit voluminöser Hochsteckfrisur und Perlenohrringen im Profil, eine Hand ordnet die letzten Strähnen",
       width: 1013,
       height: 1800,
+      position: "50% 22%",
     },
     "watch-and-learn": {
       src: "/images/coaching.jpg",
       alt: "Lange Wellen mit tief sitzendem Pferdeschwanz und schwarzer Schleife, von hinten",
       width: 1067,
       height: 1800,
+      position: "50% 45%",
     },
     "braut-make-up-coaching": {
       src: "/images/about.jpg",
       alt: "Braut im rosa Tüllkleid mit natürlichem Make-up und Hochsteckfrisur",
       width: 1350,
       height: 1800,
+      position: "50% 22%",
     },
     "online-coaching": {
       src: "/images/online-coaching.jpg",
       alt: "Lächelnde Frau mit Brille telefoniert am Laptop in einem Café",
       width: 1600,
       height: 1600,
+      position: "50% 30%",
     },
   } as Record<string, SiteImage>,
 } satisfies Record<string, SiteImage | Record<string, SiteImage>>;

@@ -1,7 +1,7 @@
 import { pageMetadata, breadcrumbLd } from "@/lib/seo";
 import { images } from "@/content/images";
 import { JsonLd } from "@/components/JsonLd";
-import { PageHero } from "@/components/sections/PageHero";
+import { ImageHero } from "@/components/sections/ImageHero";
 import { ServiceTiles } from "@/components/sections/ServiceTiles";
 import { Statement } from "@/components/sections/Statement";
 import { CtaBand } from "@/components/sections/CtaBand";
@@ -16,11 +16,11 @@ export const metadata = pageMetadata({
 export default function CoachingPage() {
   return (
     <>
-      <PageHero
+      <ImageHero
         eyebrow="Mein Service"
         title={"Coaching\n& Kurse"}
         lead="Willkommen zu meinen Coachings: sechs Formate für alle, die Bräute professionell stylen oder ihr Können im Brautstyling ausbauen möchten."
-        image={images.coaching}
+        image={images.overview}
         crumbs={[{ label: "Start", href: "/" }, { label: "Coaching" }]}
       />
       <ServiceTiles heading={false} tone="bone" />

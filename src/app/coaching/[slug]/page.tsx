@@ -6,7 +6,8 @@ import { images } from "@/content/images";
 import { site } from "@/content/site";
 import { breadcrumbLd, faqLd, pageMetadata, serviceLd } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
-import { PageHero } from "@/components/sections/PageHero";
+import { ImageHero } from "@/components/sections/ImageHero";
+import { PhotoBand } from "@/components/sections/PhotoBand";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { Accordion } from "@/components/ui/Accordion";
 import { ButtonLink } from "@/components/ui/Button";
@@ -34,29 +35,34 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
   if (!s) notFound();
 
   const others = services.filter((o) => o.slug !== s.slug);
+  const heroImg = images.services[s.slug] ?? images.overview;
+  // Foto-Bahn: drei andere Bilder als im Seitenkopf
+  const band = [images.hero, images.coaching, images.about, images.services.gruppencoaching!].filter((i) => i.src !== heroImg.src).slice(0, 3);
   const path = `/coaching/${s.slug}`;
 
   return (
     <>
-      <PageHero
+      <ImageHero
         eyebrow={`Coaching ${s.number}`}
         title={s.title}
         lead={s.teaser}
-        image={images.services[s.slug]}
+        image={images.services[s.slug] ?? images.overview}
         crumbs={[{ label: "Start", href: "/" }, { label: "Coaching", href: "/coaching" }, { label: s.title }]}
       >
         <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-          <ButtonLink href={`/kontakt?thema=${s.topic}#anfrage`}>Jetzt anfragen</ButtonLink>
+          <ButtonLink href={`/kontakt?thema=${s.topic}#anfrage`} variant="light">
+            Jetzt anfragen
+          </ButtonLink>
           {s.price ? (
-            <p className="font-display text-2xl">
+            <p className="font-display text-3xl">
               {s.price}
-              <span className="ml-2 font-sans text-sm text-muted">{s.priceNote}</span>
+              <span className="ml-3 font-sans text-sm text-bone/80">{s.priceNote}</span>
             </p>
           ) : (
-            <p className="text-sm uppercase tracking-[0.2em] text-muted">{s.priceNote}</p>
+            <p className="text-sm uppercase tracking-[0.2em] text-bone/80">{s.priceNote}</p>
           )}
         </div>
-      </PageHero>
+      </ImageHero>
 
       <Section labelledBy="detail-title" className="!pb-12 md:!pb-20">
         <div className="wrap grid gap-16 lg:grid-cols-12">
@@ -121,6 +127,8 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
           </aside>
         </div>
       </Section>
+
+      <PhotoBand shots={band} />
 
       {s.blocks.length > 0 && (
         <Section tone="blush" labelledBy="program-title">

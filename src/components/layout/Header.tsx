@@ -15,8 +15,9 @@ export function Header() {
   const open = openFor === pathname;
   const toggleRef = useRef<HTMLButtonElement>(null);
 
-  // Nur die Startseite hat einen dunklen Hero → dort startet der Header hell auf dunkel.
-  const overDark = pathname === "/" && !scrolled && !open;
+  // Startseite und Angebotsseiten haben ein dunkles Vollbild-Foto → dort startet der Header hell auf dunkel.
+  const darkHero = pathname === "/" || pathname === "/coaching" || pathname.startsWith("/coaching/");
+  const overDark = darkHero && !scrolled && !open;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);

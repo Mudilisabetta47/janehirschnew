@@ -46,6 +46,7 @@ export function ServiceTiles({ heading = true, tone = "blush" }: { heading?: boo
                       fill
                       sizes="(min-width:1024px) 30vw, (min-width:640px) 48vw, 94vw"
                       className="-z-10 object-cover transition-transform duration-[1400ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.07]"
+                      style={{ objectPosition: img.position ?? "50% 50%" }}
                     />
                   )}
                   <span aria-hidden="true" className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(36_27_23/0.92)_0%,rgb(36_27_23/0.35)_55%,rgb(36_27_23/0.1)_100%)] transition-opacity duration-700 group-hover:opacity-95" />
