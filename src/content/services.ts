@@ -35,6 +35,11 @@ export type Service = {
   metaDescription: string;
   /** true, wenn im Bestand keine Detailinhalte existieren */
   contentIncomplete?: boolean;
+  /**
+   * Online buchbar (Stripe-Checkout). Beträge sind Nettopreise in Cent; die MwSt. wird
+   * zusätzlich berechnet. Fehlt der Eintrag, gibt es nur die Anfrage.
+   */
+  booking?: { netCents: number; unit: string; maxQuantity: number };
 };
 
 export const services: Service[] = [
@@ -47,7 +52,8 @@ export const services: Service[] = [
       "1:1-Intensivcoaching für Brautfrisuren – genau auf dein Level und deine Ziele zugeschnitten.",
     forWhom: "Friseurinnen und angehende Brautstylistinnen",
     price: "899 €",
-    priceNote: "zzgl. MwSt. · Ratenzahlung in 3 Raten möglich",
+    priceNote: "zzgl. MwSt. · Ratenzahlung (2–3 Raten) nach Absprache",
+    booking: { netCents: 89900, unit: "Coaching", maxQuantity: 1 },
     headline: "Brautfrisuren-Intensivcoaching – deine Ausbildung für perfekte Hochzeitsstylings",
     intro: [
       "Möchtest du selbstbewusst und sicher Bräute stylen? In meinem exklusiven Einzelcoaching bekommst du die besten Techniken an die Hand, um atemberaubende Brautfrisuren zu kreieren, die den ganzen Tag perfekt halten.",
@@ -97,7 +103,7 @@ export const services: Service[] = [
     facts: [
       { label: "Format", value: "1:1-Coaching" },
       { label: "Preis", value: "899 € zzgl. MwSt." },
-      { label: "Zahlung", value: "Ratenzahlung in 3 Raten möglich" },
+      { label: "Zahlung", value: "Ratenzahlung (2–3 Raten) nach Absprache" },
       { label: "Termine", value: "Auch am Wochenende möglich" },
       { label: "Inhalte", value: "Individuell anpassbar" },
     ],
@@ -134,7 +140,7 @@ export const services: Service[] = [
     topic: "einzelcoaching",
     metaTitle: "Einzelcoaching Brautfrisuren – 1:1-Intensivcoaching",
     metaDescription:
-      "Brautfrisuren-Intensivcoaching 1:1: Haarvorbereitung, Hochsteck- und Flechtfrisuren, Fixierung und Business-Know-how. 899 € zzgl. MwSt., Ratenzahlung möglich.",
+      "Brautfrisuren-Intensivcoaching 1:1: Haarvorbereitung, Hochsteck- und Flechtfrisuren, Fixierung und Business-Know-how. 899 € zzgl. MwSt., Ratenzahlung nach Absprache.",
   },
 
   /* ------------------------------------------------------------------ */
@@ -145,8 +151,9 @@ export const services: Service[] = [
     teaser:
       "Zwei Tage Intensivtraining in kleiner Gruppe – Hochsteck- und Flechtfrisuren, die den ganzen Tag halten.",
     forWhom: "Friseurinnen, Kosmetiker, Visagisten, Make-up Artists",
-    price: "849 €",
-    priceNote: "zzgl. MwSt. pro Person · Ratenzahlung in 3 Raten möglich",
+    price: "899 €",
+    priceNote: "zzgl. MwSt. pro Person · Ratenzahlung (2–3 Raten) nach Absprache",
+    booking: { netCents: 89900, unit: "Teilnehmer:in", maxQuantity: 5 },
     headline: "Gruppencoaching: Brautfrisuren meistern – werde zur Expertin für Hochzeitsstylings",
     intro: [
       "In meinem intensiven Gruppencoaching zeige ich dir die besten Techniken für professionelle Hochsteck- und Flechtfrisuren, den perfekten Einsatz von Haarschmuck und vieles mehr.",
@@ -200,8 +207,8 @@ export const services: Service[] = [
     facts: [
       { label: "Dauer", value: "2 Tage Intensivtraining" },
       { label: "Gruppe", value: "Kleine Gruppe, max. 5 Personen" },
-      { label: "Preis", value: "849 € zzgl. MwSt. pro Person" },
-      { label: "Zahlung", value: "Ratenzahlung in 3 Raten möglich" },
+      { label: "Preis", value: "899 € zzgl. MwSt. pro Person" },
+      { label: "Zahlung", value: "Ratenzahlung (2–3 Raten) nach Absprache" },
       { label: "Ort", value: "Nach Absprache" },
       { label: "Termine", value: "Feste Termine oder auf Anfrage" },
       { label: "Inklusive", value: "Zertifikat und Handout" },
@@ -233,7 +240,7 @@ export const services: Service[] = [
       },
       {
         q: "Gibt es eine Ratenzahlung?",
-        a: "Ja, du kannst in Raten zahlen. Schreib mir dazu gern eine Nachricht.",
+        a: "Ja, nach Absprache in 2–3 Raten. Schreib mir dazu gern eine Nachricht.",
       },
       {
         q: "Erhalte ich nach dem Coaching ein Zertifikat?",
@@ -267,7 +274,7 @@ export const services: Service[] = [
     topic: "gruppencoaching",
     metaTitle: "Gruppencoaching Brautfrisuren – 2 Tage in kleiner Gruppe",
     metaDescription:
-      "Zwei Tage Intensivtraining für Brautfrisuren in kleiner Gruppe: Theorie, Praxis und Business. 849 € zzgl. MwSt. pro Person, inklusive Zertifikat und Handout.",
+      "Zwei Tage Intensivtraining für Brautfrisuren in kleiner Gruppe: Theorie, Praxis und Business. 899 € zzgl. MwSt. pro Person, inklusive Zertifikat und Handout.",
   },
 
   /* ------------------------------------------------------------------ */
@@ -280,6 +287,7 @@ export const services: Service[] = [
     forWhom: "Salons und Teams, die sich im Brautstyling spezialisieren",
     price: "1.200 € / Tag",
     priceNote: "zzgl. MwSt. und eventueller Fahrtkosten",
+    booking: { netCents: 120000, unit: "Tag", maxQuantity: 1 },
     headline: "Saloncoaching für Brautfrisuren – dein Team fit für Hochzeitsstylings",
     intro: [
       "Du möchtest deinen Salon auf ein neues Level im Stylingbereich bringen und/oder ihr wollt euch im Brautstyling spezialisieren? Ihr möchtet schneller und effizienter arbeiten und/oder mehr Umsatz generieren? Dann ist dieses Angebot für dich und dein Team richtig.",
@@ -330,7 +338,7 @@ export const services: Service[] = [
         label: "Inklusive",
         value: "Produkte, Puppenköpfe (hochwertige Köpfe der Firma Limage), Zertifikate und Handout",
       },
-      { label: "Zahlung", value: "In 2 Raten möglich" },
+      { label: "Zahlung", value: "Ratenzahlung (2–3 Raten) nach Absprache" },
       { label: "Termin", value: "Flexibel nach Absprache" },
     ],
     faq: [
@@ -356,7 +364,7 @@ export const services: Service[] = [
         q: "Sind Materialkosten im Preis enthalten?",
         a: "Alle Materialien sowie die Puppenköpfe sind im Preis enthalten.",
       },
-      { q: "Kann ich in Raten zahlen?", a: "Ja, du kannst in 2 Raten zahlen." },
+      { q: "Kann ich in Raten zahlen?", a: "Ja, nach Absprache in 2–3 Raten. Schreib mir dazu einfach eine Nachricht." },
       {
         q: "Kann ich das Coaching für mein gesamtes Team buchen?",
         a: "Natürlich. Nach Absprache muss ich eventuell eine Assistenz dazubuchen, damit ihr in der Praxis alle gut betreut seid.",
@@ -382,6 +390,7 @@ export const services: Service[] = [
     forWhom: "Fortgeschrittene und Profis im Frisurenbereich",
     price: "449 € / Tag p. P.",
     priceNote: "zzgl. MwSt. und eventueller Fahrtkosten · Salons bitte anfragen",
+    booking: { netCents: 44900, unit: "Teilnehmer:in", maxQuantity: 5 },
     headline: "Watch & Learn – Trendfrisuren strukturiert aufbauen",
     intro: [
       "Du möchtest dein Wissen für neue Trends und Techniken erweitern? Du bist schon Expertin oder Experte im Frisurenbereich oder zumindest fortgeschritten, sodass du das Erlernte in der Praxis gut allein umsetzen kannst?",

@@ -4,6 +4,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 import { HeroBackdrop } from "./HeroBackdrop";
 import { HeroSeal } from "./HeroSeal";
+import { StarRating } from "@/components/ui/StarRating";
 
 /** Vollbild-Hero: große Fotos als Hintergrund, Name + Signatur „Coaching“ darüber (wie auf der bisherigen Seite). */
 export function Hero() {
@@ -50,6 +51,7 @@ export function Hero() {
               {site.phone.display}
             </a>
           </div>
+          <StarRating className="mt-7 text-bone" />
         </div>
 
         <HeroSeal className="absolute bottom-16 right-5 hidden md:block lg:bottom-24 lg:right-10" />

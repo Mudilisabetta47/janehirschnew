@@ -13,6 +13,7 @@ export default function PrivacyPage() {
       title="Datenschutz"
       lead="Wie mit deinen Daten auf dieser Website umgegangen wird – kurz, verständlich und vollständig."
       todo={[
+        "Stripe als Zahlungsdienstleister ist ergänzt (Abschnitt 5): Konto, AV-Vertrag/Verantwortlichkeit und Rechnungseinstellungen klären.",
         "IONOS SE als Hoster und Mailanbieter ist eingetragen (laut Auftraggeber). Offen: Serverstandort/Paket und Speicherdauer der Server-Logfiles aus dem IONOS-Vertrag übernehmen; Auftragsverarbeitungsvertrag (AVV) mit IONOS abschließen bzw. bestätigen.",
         "Rechtsgrundlage der Formularverarbeitung (Art. 6 Abs. 1 lit. b bzw. f statt reiner Einwilligung) und Wortlaut der Zustimmungs-Checkbox rechtlich bestätigen.",
         "Aufsichtsbehörde (Anschrift aus öffentlicher Quelle, bitte gegenprüfen) und Rechteteil gegen den aktuellen Stand prüfen. Der bisherige Text stammt von hochzeitsstyling-jane.de und enthielt Abschnitte zu Kommentaren/Registrierung, die es hier nicht mehr gibt (entfernt).",
@@ -61,22 +62,30 @@ export default function PrivacyPage() {
         Zum Schutz vor automatisierten Anfragen nutzt das Formular ein verstecktes Feld, eine signierte Zeitprüfung und eine Begrenzung der Anfragen pro Zeitraum. Dafür werden technische Verbindungsmerkmale (z. B. IP-Adresse) nur kurzzeitig im Arbeitsspeicher des Servers verarbeitet und nicht dauerhaft gespeichert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Es kommt kein externer Dienst (z. B. reCAPTCHA) zum Einsatz.
       </p>
 
-      <h2>5. Kontakt per E-Mail oder Telefon</h2>
+      <h2>5. Online-Buchung und Zahlung (Stripe)</h2>
+      <p>
+        Wenn du ein Coaching online buchst, wirst du zur Bezahlseite unseres Zahlungsdienstleisters Stripe Payments Europe, Ltd., 1 Grand Canal Street Lower, Grand Canal Dock, Dublin, Irland (Muttergesellschaft: Stripe, Inc., USA) weitergeleitet. Dort gibst du deine Zahlungs- und Rechnungsdaten ein (Name, E-Mail, Anschrift, ggf. Telefonnummer und USt-IdNr., Zahlungsmittel). Diese Daten verarbeitet Stripe in eigener Verantwortung bzw. als Auftragsverarbeiter; Kartendaten gelangen nie auf diese Website.
+      </p>
+      <p>
+        Ich erhalte nach erfolgreicher Zahlung eine Benachrichtigung per E-Mail mit Name, Kontaktdaten, Anschrift, gebuchtem Angebot, Betrag und deinem Wunschzeitraum, um den Termin abzustimmen und die Leistung zu erbringen. Rechtsgrundlagen sind Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung) und Art. 6 Abs. 1 lit. c DSGVO (steuer- und handelsrechtliche Aufbewahrung). Eine Datenübermittlung in die USA kann nicht ausgeschlossen werden; sie stützt sich auf die Angemessenheitsentscheidung (EU-US Data Privacy Framework) bzw. Standardvertragsklauseln. Weitere Informationen: stripe.com/de/privacy. <Fill>Auftragsverarbeitung/Verantwortlichkeit mit Stripe-Konto und Steuerberatung abstimmen</Fill>
+      </p>
+
+      <h2>6. Kontakt per E-Mail oder Telefon</h2>
       <p>
         Wenn du mir per E-Mail schreibst oder anrufst, verarbeite ich deine Angaben zur Bearbeitung der Anfrage (Art. 6 Abs. 1 lit. b bzw. f DSGVO). E-Mail-Kommunikation kann Sicherheitslücken aufweisen; ein lückenloser Schutz vor dem Zugriff Dritter ist nicht möglich.
       </p>
 
-      <h2>6. Cookies und Tracking</h2>
+      <h2>7. Cookies und Tracking</h2>
       <p>
-        Es werden keine Cookies gesetzt und keine Informationen im Endgerät gespeichert, die nicht zwingend für die Anzeige der Seite erforderlich sind. Deshalb ist kein Cookie-Banner nötig.
+        Diese Website setzt keine Cookies und speichert keine Informationen im Endgerät. Beim Wechsel zur Bezahlseite von Stripe (Abschnitt 5) gelten dort die Cookie- und Datenschutzbestimmungen von Stripe.
       </p>
 
-      <h2>7. Links zu sozialen Netzwerken</h2>
+      <h2>8. Links zu sozialen Netzwerken</h2>
       <p>
         Diese Seite verlinkt auf Instagram, TikTok und Facebook. Es werden keine Inhalte dieser Dienste eingebunden – eine Datenübertragung an die Anbieter findet erst statt, wenn du dem Link folgst. Dann gelten die Datenschutzbestimmungen des jeweiligen Anbieters.
       </p>
 
-      <h2>8. Deine Rechte</h2>
+      <h2>9. Deine Rechte</h2>
       <p>Du hast gegenüber mir folgende Rechte hinsichtlich deiner personenbezogenen Daten:</p>
       <ul>
         <li>Auskunft über die gespeicherten Daten sowie Kopie (Art. 15 DSGVO)</li>
@@ -90,12 +99,12 @@ export default function PrivacyPage() {
         Bevor du rechtliche Schritte einleitest, schreib mir gern eine Nachricht – meist lässt sich alles schnell klären. Dein Beschwerderecht bei der zuständigen Aufsichtsbehörde bleibt unberührt. Zuständig ist die Landesbeauftragte für den Datenschutz Niedersachsen, Prinzenstraße 5, 30159 Hannover.
       </p>
 
-      <h2>9. Speicherdauer und gesetzliche Aufbewahrung</h2>
+      <h2>10. Speicherdauer und gesetzliche Aufbewahrung</h2>
       <p>
         Gespeicherte Daten werden gelöscht, sobald sie für ihren Zweck nicht mehr erforderlich sind und keine gesetzlichen Aufbewahrungspflichten entgegenstehen. Nach deutschem Recht gelten insbesondere 10 Jahre (§ 147 Abs. 1 AO, § 257 Abs. 1 Nr. 1 und 4, Abs. 4 HGB) und 6 Jahre (§ 257 Abs. 1 Nr. 2 und 3, Abs. 4 HGB).
       </p>
 
-      <h2>10. TLS-Verschlüsselung</h2>
+      <h2>11. TLS-Verschlüsselung</h2>
       <p>
         Diese Seite nutzt aus Sicherheitsgründen eine TLS-Verschlüsselung. Du erkennst sie am „https://“ und am Schloss-Symbol in der Adresszeile deines Browsers.
       </p>

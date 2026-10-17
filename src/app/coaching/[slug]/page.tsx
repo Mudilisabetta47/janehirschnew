@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getService, services } from "@/content/services";
@@ -9,6 +10,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { ImageHero } from "@/components/sections/ImageHero";
 import { PhotoBand } from "@/components/sections/PhotoBand";
 import { ContactSection } from "@/components/sections/ContactSection";
+import { BookingPanel } from "@/components/forms/BookingPanel";
 import { Accordion } from "@/components/ui/Accordion";
 import { ButtonLink } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
@@ -21,6 +23,9 @@ export function generateStaticParams(): Params[] {
   return services.map((s) => ({ slug: s.slug }));
 }
 export const dynamicParams = false;
+
+// Online-Buchung erscheint nur, wenn der Checkout bewusst aktiviert wurde (Build-Variable).
+const checkoutEnabled = process.env.NEXT_PUBLIC_CHECKOUT_ENABLED === "true";
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
@@ -50,7 +55,12 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
         crumbs={[{ label: "Start", href: "/" }, { label: "Coaching", href: "/coaching" }, { label: s.title }]}
       >
         <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-          <ButtonLink href={`/kontakt?thema=${s.topic}#anfrage`} variant="light">
+          {s.booking && checkoutEnabled && (
+            <ButtonLink href="#buchen" variant="light">
+              Direkt buchen
+            </ButtonLink>
+          )}
+          <ButtonLink href={`/kontakt?thema=${s.topic}#anfrage`} variant={s.booking && checkoutEnabled ? "ghost" : "light"}>
             Jetzt anfragen
           </ButtonLink>
           {s.price ? (
@@ -187,6 +197,16 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
             <Reveal className="lg:col-span-8" delay={0.1}>
               <Accordion items={s.faq} />
             </Reveal>
+          </div>
+        </Section>
+      )}
+
+      {s.booking && checkoutEnabled && (
+        <Section id="buchen" labelledBy="buchen-title">
+          <div className="wrap">
+            <Suspense>
+              <BookingPanel slug={s.slug} title={s.title} booking={s.booking} />
+            </Suspense>
           </div>
         </Section>
       )}
