@@ -13,10 +13,9 @@ export default function PrivacyPage() {
       title="Datenschutz"
       lead="Wie mit deinen Daten auf dieser Website umgegangen wird – kurz, verständlich und vollständig."
       todo={[
-        "Hosting-Anbieter, Serverstandort und Speicherdauer der Server-Logfiles eintragen (Auftragsverarbeitungsvertrag prüfen).",
-        "E-Mail-/SMTP-Dienstleister für den Versand der Formularanfragen eintragen (AV-Vertrag, ggf. Drittlandtransfer).",
+        "IONOS SE als Hoster und Mailanbieter ist eingetragen (laut Auftraggeber). Offen: Serverstandort/Paket und Speicherdauer der Server-Logfiles aus dem IONOS-Vertrag übernehmen; Auftragsverarbeitungsvertrag (AVV) mit IONOS abschließen bzw. bestätigen.",
         "Rechtsgrundlage der Formularverarbeitung (Art. 6 Abs. 1 lit. b bzw. f statt reiner Einwilligung) und Wortlaut der Zustimmungs-Checkbox rechtlich bestätigen.",
-        "Aufsichtsbehörde und Rechteteil gegen den aktuellen Stand prüfen. Der bisherige Text stammt von hochzeitsstyling-jane.de und enthielt Abschnitte zu Kommentaren/Registrierung, die es hier nicht mehr gibt (entfernt).",
+        "Aufsichtsbehörde (Anschrift aus öffentlicher Quelle, bitte gegenprüfen) und Rechteteil gegen den aktuellen Stand prüfen. Der bisherige Text stammt von hochzeitsstyling-jane.de und enthielt Abschnitte zu Kommentaren/Registrierung, die es hier nicht mehr gibt (entfernt).",
         "Der bisherige Text auf jane-hirsch.de („Privacy Policy“) stammte vom Theme-Hersteller (AxiomThemes) und wurde NICHT übernommen.",
       ]}
     >
@@ -40,10 +39,10 @@ export default function PrivacyPage() {
 
       <h2>3. Hosting und Server-Logfiles</h2>
       <p>
-        Diese Website wird bei <Fill>Hosting-Anbieter, Anschrift, Serverstandort</Fill> gehostet. Beim Aufruf der Seite verarbeitet der Server automatisch technische Daten (Server-Logfiles): IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, übertragene Datenmenge, Referrer-URL sowie Browsertyp und Betriebssystem. Eine Zusammenführung mit anderen Datenquellen findet nicht statt.
+        Diese Website wird bei der IONOS SE, Elgendorfer Str. 57, 56410 Montabaur, gehostet (Serverstandort: <Fill>laut IONOS-Vertrag, z. B. Deutschland</Fill>). Mit dem Anbieter besteht ein Vertrag zur Auftragsverarbeitung. Beim Aufruf der Seite verarbeitet der Server automatisch technische Daten (Server-Logfiles): IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, übertragene Datenmenge, Referrer-URL sowie Browsertyp und Betriebssystem. Eine Zusammenführung mit anderen Datenquellen findet nicht statt.
       </p>
       <p>
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem sicheren und stabilen Betrieb). Die Logfiles werden nach <Fill>Speicherdauer, z. B. 7 Tage</Fill> gelöscht.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem sicheren und stabilen Betrieb). Die Logfiles werden nach <Fill>Speicherdauer laut IONOS-Paket</Fill> gelöscht.
       </p>
 
       <h2>4. Kontaktformular und Anfragen</h2>
@@ -51,7 +50,7 @@ export default function PrivacyPage() {
         Wenn du das Formular nutzt, verarbeite ich die Angaben, die du eingibst: Name, E-Mail-Adresse, optional Telefonnummer und Salonname, das gewählte Thema, deine Nachricht sowie den Zeitpunkt deiner Bestätigung der Datenschutzhinweise. Die Daten dienen ausschließlich der Bearbeitung deiner Anfrage und möglichen Anschlussfragen.
       </p>
       <p>
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen auf deine Anfrage) bzw. – bei allgemeinen Fragen – Art. 6 Abs. 1 lit. f DSGVO. Die Nachricht wird per verschlüsselter Verbindung an mein E-Mail-Postfach übermittelt (Versand über <Fill>E-Mail-/SMTP-Dienstleister</Fill>). Auf dem Server der Website werden Formularinhalte <strong>nicht gespeichert</strong>.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen auf deine Anfrage) bzw. – bei allgemeinen Fragen – Art. 6 Abs. 1 lit. f DSGVO. Die Nachricht wird per verschlüsselter Verbindung an mein E-Mail-Postfach übermittelt (Versand über den E-Mail-Dienst der IONOS SE; dort liegt auch das empfangende Postfach). Auf dem Server der Website werden Formularinhalte <strong>nicht gespeichert</strong>.
       </p>
       <p>
         Deine Anfrage bleibt in meinem Postfach, bis dein Anliegen erledigt ist, du Löschung verlangst oder der Zweck entfällt. Gesetzliche Aufbewahrungspflichten (z. B. für Handelsbriefe) bleiben unberührt.
@@ -88,7 +87,7 @@ export default function PrivacyPage() {
         <li>Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO); eine formlose Nachricht per E-Mail genügt</li>
       </ul>
       <p>
-        Bevor du rechtliche Schritte einleitest, schreib mir gern eine Nachricht – meist lässt sich alles schnell klären. Dein Beschwerderecht bei der zuständigen Aufsichtsbehörde bleibt unberührt. Zuständig ist die Landesbeauftragte für den Datenschutz Niedersachsen <Fill>Anschrift und Kontaktdaten der Behörde prüfen</Fill>.
+        Bevor du rechtliche Schritte einleitest, schreib mir gern eine Nachricht – meist lässt sich alles schnell klären. Dein Beschwerderecht bei der zuständigen Aufsichtsbehörde bleibt unberührt. Zuständig ist die Landesbeauftragte für den Datenschutz Niedersachsen, Prinzenstraße 5, 30159 Hannover.
       </p>
 
       <h2>9. Speicherdauer und gesetzliche Aufbewahrung</h2>

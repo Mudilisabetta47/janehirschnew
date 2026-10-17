@@ -14,8 +14,8 @@ export default function ImpressumPage() {
       lead="Angaben zum Anbieter dieser Website."
       todo={[
         "Bestand nennt „§ 5 TMG“ – seit Mai 2024 gilt § 5 DDG (Digitale-Dienste-Gesetz). Überschrift wurde angepasst; Inhalt prüfen lassen.",
-        "Umsatzsteuer-Identifikationsnummer: Preise werden „zzgl. MwSt.“ ausgewiesen – ist eine USt-IdNr. vorhanden, muss sie hier stehen (im Bestand fehlt sie).",
-        "Berufsbezeichnung/Kammer: Falls Friseur- oder Handwerksleistungen angeboten werden, ggf. Angaben zu Kammer und Berufsbezeichnung (Bestand: keine).",
+        "USt-IdNr. von Jane Hirsch eintragen (Pflichtangabe nach § 5 Abs. 1 Nr. 6 DDG; im Bestand fehlte sie).",
+        "Laut Auftraggeber arbeitet Jane Hirsch als Make-up Artist und Coach, nicht als eingetragener Friseurbetrieb → keine Kammerangaben. Bitte rechtlich bestätigen (insb. falls Frisurleistungen am Kunden erbracht werden).",
         "Telefonnummer im Bestand in zwei Schreibweisen – hier vereinheitlicht.",
       ]}
     >
@@ -37,7 +37,7 @@ export default function ImpressumPage() {
 
       <h2>Umsatzsteuer-ID</h2>
       <p>
-        Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: <Fill>USt-IdNr. oder Hinweis auf Kleinunternehmerregelung</Fill>
+        Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: <Fill>USt-IdNr. (Format DE + 9 Ziffern)</Fill>
       </p>
 
       <h2>Verbraucherstreitbeilegung / Universalschlichtungsstelle</h2>
