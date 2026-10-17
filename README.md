@@ -20,6 +20,7 @@ Produktionsvorschau: `npm run build && npm start`. Alle Prüfungen: `npm run che
 | `02-technik.md` | Architektur, Formular-Sicherheit, Staging/Deployment |
 | `03-redirects.md` | Weiterleitungsübersicht alter WordPress-URLs (erzeugt) |
 | `04-offene-fragen.md` | **Offene Fragen und fehlende Originalinhalte** |
+| `05-einwilligung-vorlage.md` | Vorlage für die Einwilligung der Teilnehmerinnen (Zitat, Vorname, Foto) |
 
 ## Inhalte pflegen
 Alle Texte, Preise, Kontaktdaten: `src/content/*.ts`. Fotos: Dateien nach `public/images/`, dann in `src/content/images.ts` eintragen. Stimmen: `src/content/testimonials.ts`. Alte URLs: `src/content/redirects.ts`, danach `npm run redirects:export`.
