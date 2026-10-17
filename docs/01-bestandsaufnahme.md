@@ -21,7 +21,7 @@ Stand der Analyse: 17.10.2026 · Quelle: öffentlich abrufbare Seiten, WordPress
 
 | Alte URL | Titel (WP) | Inhalt / Funktion | Neue URL |
 |---|---|---|---|
-| `/` | Startseite · „Jane Hirsch \| JH Coaching“ | Hero (Slider), Service-Kacheln (6), Expertise-Zähler (leer: „0+“), Bewertungs-Sterne (ohne Text), CTA | `/` |
+| `/` | Startseite · „Jane Hirsch \| JH Coaching“ | Hero (Slider), Service-Kacheln (6), Expertise-Zähler (leer: „0+“), Teilnehmer-Karussell „Das sagen meine Teilnehmer“ (5 Nachrichten als Bilder; erst später korrekt erkannt), CTA | `/` |
 | `/our-services/` | Mein Service | 6 Angebote mit Preisen | `/coaching` |
 | `/einzelcoaching1/` (+ `/product/einzelcoaching-2/`) | Einzelcoaching | Detailseite, FAQ, Formular, Shop-Produkt 899 € | `/coaching/einzelcoaching` |
 | `/gruppencoaching/` (+ `/product/gruppencoaching/`) | Gruppencoaching | Detailseite, FAQ, Formular, Shop-Produkt 849 € | `/coaching/gruppencoaching` |
@@ -61,7 +61,7 @@ Es gibt keine Blogbeiträge (`/wp-json/wp/v2/posts` → leer).
 | Social-Links | Facebook (Brautstylist Jane Hirsch), Instagram `@jane.hirsch`, TikTok `@janehirsch` | übernommen |
 | Telefon-Link | `+49 173 4113111` (ein Link fehlerhaft: `tel:+01734113111`) | korrekt: `+491734113111` |
 | Kommentarfunktion | auf Service-CPT-Seiten sichtbar | entfällt |
-| Bewertungen | Fünf Stern-Grafiken, **kein Text** | Komponente vorhanden, bleibt leer bis echte Zitate vorliegen |
+| Teilnehmer-Stimmen | Karussell mit 5 Nachrichten als Bilder (Profilfoto + Text) | als Text-Karussell mit Profilfotos übernommen; zusätzlich 5,0 ★ (46 Google-Bewertungen, Quelle benannt) |
 
 ## 5. Kontaktdaten (aus dem Bestand)
 
@@ -95,6 +95,6 @@ Mängel: OG-Bild verweist auf Staging-Host `admin6258.live-website.com`, Beschre
 
 Auf der Live-Seite liegen Fotos (Hero-Bild mit Braut-Styling `DSC00869`, `IMG_2868`, Ponytail `DSC01745`, Gruppen-/Einzelcoaching-Aufnahmen `Design-ohne-Titel-8/-9`, Café-Foto `unnamed-file`), das Logo (`J.K-1.png`), Service-Banner mit Text (`EINZELCOACHING-*.png`), Theme-Dekor-SVGs und Bewertungs-PNGs.
 
-**Stand 17.10.2026:** Die Auftraggeberseite hat im Chat ausdrücklich freigegeben, die Bilder der alten Seite zu verwenden. Übernommen wurden 6 Fotos (optimiert, siehe `public/images/`) und das Logo (Header). **Nicht** übernommen: Service-Banner mit eingebranntem Text, Theme-Dekor, Stern-Grafiken, Referenz-Thumbnail `IMG_9665` (341 px, zu klein). Offen bleibt der *Nachweis* (Fotograf:in, Einwilligung abgebildeter Personen) – siehe `04-offene-fragen.md` A2.
+**Stand 17.10.2026:** Die Auftraggeberseite hat im Chat ausdrücklich freigegeben, die Bilder der alten Seite zu verwenden. Übernommen wurden 6 Fotos (optimiert, siehe `public/images/`) und das Logo (Header). **Nicht** übernommen: Service-Banner mit eingebranntem Text, Theme-Dekor, Stern-Grafiken (Bewertungs-Dekor), Referenz-Thumbnail `IMG_9665` (341 px, zu klein). Offen bleibt der *Nachweis* (Fotograf:in, Einwilligung abgebildeter Personen) – siehe `04-offene-fragen.md` A2.
 
 Zusätzlich hat die Auftraggeberseite am 17.10.2026 ein eigenes Querformat-Foto geliefert (S/W-Doppelbild, 2000×1125, `public/images/duo.jpg`). Es ist jetzt das Hero-Bild der Startseite und das Bildband auf „Über mich“.
