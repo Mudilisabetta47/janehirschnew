@@ -15,6 +15,13 @@
 export type SiteImage = { src: string; alt: string; width: number; height: number };
 
 export const images = {
+  /** Großes Querformat (S/W-Doppelbild): Hero der Startseite und Über-mich-Band */
+  duo: {
+    src: "/images/duo.jpg",
+    alt: "Schwarz-Weiß-Doppelbild: links steckt die Stylistin einer Braut die Frisur, rechts die fertige Hochsteckfrisur mit Perlen im Profil",
+    width: 2000,
+    height: 1125,
+  },
   hero: {
     src: "/images/hero.jpg",
     alt: "Braut mit voluminöser Hochsteckfrisur und Perlenohrringen im Profil, eine Hand ordnet die letzten Strähnen",
@@ -80,4 +87,4 @@ export const images = {
   } as Record<string, SiteImage>,
 } satisfies Record<string, SiteImage | Record<string, SiteImage>>;
 
-export type ImageSlotKey = "hero" | "about" | "coaching" | "contact";
+export type ImageSlotKey = "hero" | "about" | "coaching" | "contact" | "duo";

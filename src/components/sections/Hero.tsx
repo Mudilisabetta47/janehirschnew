@@ -7,30 +7,29 @@ import { HeroSeal } from "./HeroSeal";
 
 /** Vollbild-Hero: große Fotos als Hintergrund, Name + Signatur „Coaching“ darüber (wie auf der bisherigen Seite). */
 export function Hero() {
-  const photos = [images.hero, images.about, images.coaching];
   return (
     <section aria-labelledby="hero-title" className="on-dark grain relative isolate flex min-h-[100svh] items-end overflow-hidden bg-mocha text-bone">
-      <HeroBackdrop photos={photos} />
+      <HeroBackdrop image={images.duo} />
 
-      <div className="wrap relative w-full pb-16 pt-36 lg:pb-24">
-        <div className="max-w-3xl">
+      <div className="wrap relative w-full pb-14 pt-36 lg:pb-20">
+        <div className="max-w-4xl">
           <p className="eyebrow mb-8 flex items-center gap-4">
             <span aria-hidden="true" className="h-px w-10 bg-rose" />
             {site.tagline}
           </p>
 
-          <div className="relative">
+          <div className="relative inline-block">
             <SplitHeading
               as="h1"
               immediate
               delay={0.15}
-              text={"Jane\nHirsch"}
+              text={"Jane Hirsch"}
               srSuffix=" – Brautstyling-Coaching und Make-up Artist in Weyhe bei Bremen"
-              className="display-xl"
+              className="display-xl !text-[clamp(3.4rem,8vw,8rem)]"
             />
             <span
               aria-hidden="true"
-              className="script pointer-events-none absolute -bottom-4 left-[40%] -rotate-6 text-[clamp(3.25rem,10vw,9rem)] text-rose [animation:fade-in_1.4s_1.2s_both] [text-shadow:0_2px_24px_rgb(0_0_0/0.45)] sm:left-[48%] lg:left-[52%]"
+              className="script pointer-events-none absolute -bottom-9 right-0 -rotate-6 text-[clamp(3rem,8vw,7.5rem)] text-rose [animation:fade-in_1.4s_1.2s_both] [text-shadow:0_2px_24px_rgb(0_0_0/0.5)] md:-bottom-14 md:-right-[22%]"
             >
               Coaching
             </span>
@@ -40,7 +39,7 @@ export function Hero() {
             Mit meiner Erfahrung als Hair- &amp; Make-up Artist zeige ich dir, wie du Brautstyling sicher erlernst – damit du deine Kreativität entfalten, Bräute zum Strahlen bringen und mit deinem Können unvergessliche Momente schaffen kannst.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+          <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-5 md:mt-9">
             <ButtonLink href="/coaching" variant="light">
               Coaching entdecken
             </ButtonLink>

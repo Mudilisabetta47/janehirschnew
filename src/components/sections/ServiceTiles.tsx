@@ -30,14 +30,14 @@ export function ServiceTiles({ heading = true, tone = "blush" }: { heading?: boo
           </div>
         )}
 
-        <Stagger as="ul" stagger={0.08} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        <Stagger as="ul" stagger={0.08} className="grid gap-4 sm:grid-cols-2 lg:-mx-8 lg:grid-cols-3 lg:gap-5 xl:-mx-14">
           {services.map((s) => {
             const img = images.services[s.slug];
             return (
               <StaggerItem as="li" key={s.slug}>
                 <Link
                   href={`/coaching/${s.slug}`}
-                  className="on-dark group relative isolate flex aspect-[4/5] flex-col justify-between overflow-hidden bg-mocha p-6 text-bone md:p-8 lg:aspect-[3/4]"
+                  className="on-dark group relative isolate flex aspect-[4/5] flex-col justify-between overflow-hidden bg-mocha p-6 text-bone md:p-8 lg:aspect-[4/5] lg:p-10"
                 >
                   {img && (
                     <Image

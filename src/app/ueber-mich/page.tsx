@@ -9,6 +9,7 @@ import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { Monogram } from "@/components/ui/Monogram";
+import Image from "next/image";
 
 export const metadata = pageMetadata({
   title: "Über mich – Make-up Artist, Brautstylistin & Coach",
@@ -26,6 +27,12 @@ export default function AboutPage() {
         lead={about.lead}
         crumbs={[{ label: "Start", href: "/" }, { label: "Über mich" }]}
       />
+
+      <section aria-label="Bildimpression" className="relative bg-mocha">
+        <div className="relative aspect-[16/10] w-full max-h-[85svh] overflow-hidden md:aspect-[16/8]">
+          <Image src={images.duo.src} alt={images.duo.alt} fill priority sizes="100vw" className="object-cover object-[30%_30%] md:object-center" />
+        </div>
+      </section>
 
       <Section labelledBy="story-title">
         <h2 id="story-title" className="sr-only">

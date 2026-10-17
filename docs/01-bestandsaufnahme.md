@@ -96,3 +96,5 @@ Mängel: OG-Bild verweist auf Staging-Host `admin6258.live-website.com`, Beschre
 Auf der Live-Seite liegen Fotos (Hero-Bild mit Braut-Styling `DSC00869`, `IMG_2868`, Ponytail `DSC01745`, Gruppen-/Einzelcoaching-Aufnahmen `Design-ohne-Titel-8/-9`, Café-Foto `unnamed-file`), das Logo (`J.K-1.png`), Service-Banner mit Text (`EINZELCOACHING-*.png`), Theme-Dekor-SVGs und Bewertungs-PNGs.
 
 **Stand 17.10.2026:** Die Auftraggeberseite hat im Chat ausdrücklich freigegeben, die Bilder der alten Seite zu verwenden. Übernommen wurden 6 Fotos (optimiert, siehe `public/images/`) und das Logo (Header). **Nicht** übernommen: Service-Banner mit eingebranntem Text, Theme-Dekor, Stern-Grafiken, Referenz-Thumbnail `IMG_9665` (341 px, zu klein). Offen bleibt der *Nachweis* (Fotograf:in, Einwilligung abgebildeter Personen) – siehe `04-offene-fragen.md` A2.
+
+Zusätzlich hat die Auftraggeberseite am 17.10.2026 ein eigenes Querformat-Foto geliefert (S/W-Doppelbild, 2000×1125, `public/images/duo.jpg`). Es ist jetzt das Hero-Bild der Startseite und das Bildband auf „Über mich“.

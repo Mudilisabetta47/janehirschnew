@@ -4,6 +4,7 @@ import { AudienceMarquee } from "@/components/sections/AudienceMarquee";
 import { Statement } from "@/components/sections/Statement";
 import { ServiceTiles } from "@/components/sections/ServiceTiles";
 import { Expertise } from "@/components/sections/Expertise";
+import { PhotoBand } from "@/components/sections/PhotoBand";
 import { AboutTeaser } from "@/components/sections/AboutTeaser";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { ResultsBand } from "@/components/sections/ResultsBand";
@@ -28,6 +29,7 @@ export default function HomePage() {
       <Hero />
       <AudienceMarquee />
       <ServiceTiles tone="blush" />
+      <PhotoBand />
       <Statement />
       <Expertise />
       <AboutTeaser />

@@ -35,7 +35,7 @@ export function PageHero({
       </svg>
       <BackdropWord text={backdrop} className="-bottom-[6%] -left-[2%] text-rose/[0.2]" from="-4%" to="6%" />
       <div className={`wrap relative ${image ? "grid items-end gap-12 lg:grid-cols-12" : ""}`}>
-        <div className={image ? "lg:col-span-7" : ""}>
+        <div className={image ? "lg:col-span-6" : ""}>
         {crumbs && (
           <nav aria-label="Brotkrumen" className="mb-10 text-[0.78rem] uppercase tracking-[0.2em] text-muted">
             <ol className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -73,7 +73,7 @@ export function PageHero({
         )}
         </div>
         {image && (
-          <div className="fade-up lg:col-span-4 lg:col-start-9" style={{ "--d": "0.25s" } as React.CSSProperties}>
+          <div className="fade-up lg:col-span-5 lg:col-start-8" style={{ "--d": "0.25s" } as React.CSSProperties}>
             <div className="arch relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden lg:max-w-none">
               <Image src={image.src} alt={image.alt} width={image.width} height={image.height} priority sizes="(min-width:1024px) 30vw, 80vw" className="h-full w-full object-cover" />
             </div>
