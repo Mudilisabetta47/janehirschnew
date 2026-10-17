@@ -1,0 +1,292 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Designsystem „Atelier Blush & Noir“
+   Basis: bestehende Marke (schwarzes Handschrift-Monogramm, helle Blush-/
+   Cremetöne #FFF4EE / #FFF5E2, Signatur-Script). Neu: warmes Rosé-Gold als
+   einziger Akzent, tiefes Mokka für cinematische Flächen.
+   Kontraste (WCAG 2.2, berechnet): ink/bone 17.3:1 · muted/bone 6.2:1 ·
+   rose-deep/bone 5.4:1 (auf blush 4.8:1, NICHT auf sand verwenden) ·
+   bone/mocha 15.8:1 · rose/mocha 7.2:1
+------------------------------------------------------------------- */
+@theme {
+  --color-ink: #181310;
+  --color-mocha: #241b17;
+  --color-mocha-2: #2f241f;
+  --color-bone: #fbf7f2;
+  --color-blush: #f5e8e0;
+  --color-sand: #e9d6c8;
+  --color-rose: #c9a190;
+  --color-rose-deep: #8a5a48;
+  --color-muted: #675a52;
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-jost), "Jost", ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-script-face), "Mrs Saint Delafield", cursive;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-spin-slow: spin 28s linear infinite;
+  --animate-float: float 9s ease-in-out infinite;
+
+}
+
+/* Keyframes (außerhalb von @theme, damit sie immer ausgegeben werden) */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) rotate(-6deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(-6deg);
+  }
+}
+@keyframes grow-line {
+  0% {
+    transform: scaleY(0);
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+@keyframes word-rise {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.word-rise {
+  animation: word-rise 1.05s var(--ease-out-expo) both;
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Above-the-fold-Texte: CSS statt JS, damit sie nicht auf die Hydration warten (LCP) */
+.fade-up {
+  animation: fade-up 0.9s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: var(--color-rose);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-rose-deep);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .on-dark :focus-visible {
+    outline-color: var(--color-rose);
+  }
+  a {
+    color: inherit;
+  }
+  ul[role="list"] {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 82rem;
+    margin-inline: auto;
+    padding-inline: max(1.25rem, env(safe-area-inset-left));
+  }
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 2.5rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .wrap {
+      padding-inline: 4rem;
+    }
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-rose-deep);
+  }
+  .on-dark .eyebrow {
+    color: var(--color-rose);
+  }
+
+  .display-xl {
+    font-size: clamp(3.4rem, 11.5vw, 10.5rem);
+    line-height: 0.92;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+  }
+  .display-l {
+    font-size: clamp(2.5rem, 6.6vw, 5.75rem);
+    line-height: 0.98;
+    font-weight: 300;
+    letter-spacing: -0.025em;
+  }
+  .display-m {
+    font-size: clamp(1.9rem, 3.8vw, 3.25rem);
+    line-height: 1.06;
+    font-weight: 300;
+  }
+  .lead {
+    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+  .on-dark .lead {
+    color: color-mix(in oklab, var(--color-bone) 78%, transparent);
+  }
+  .script {
+    font-family: var(--font-script);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: 0;
+  }
+
+  /* Textlink mit wachsender Linie */
+  .link-line {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.5s var(--ease-out-expo);
+  }
+  .link-line:hover {
+    background-size: 0% 1px;
+    background-position: 100% 100%;
+  }
+
+  /* Feines Filmkorn – statisch, kein Performance-Risiko */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.16;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  .arch {
+    border-radius: 999px 999px 0 0;
+  }
+
+  .hairline {
+    border-color: color-mix(in oklab, currentColor 16%, transparent);
+  }
+}
+
+/* Reduzierte Bewegung: keine Endlosanimationen, kein weiches Scrollen */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* Rechtstexte: ruhige Typografie */
+.legal h2 {
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  margin: 3.25rem 0 1rem;
+  font-weight: 400;
+}
+.legal h3 {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  margin: 1.75rem 0 0.5rem;
+}
+.legal p,
+.legal li {
+  color: var(--color-ink);
+}
+.legal p + p {
+  margin-top: 1rem;
+}
+.legal ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0.75rem 0;
+}
+.legal a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
