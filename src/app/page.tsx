@@ -2,7 +2,8 @@ import { pageMetadata } from "@/lib/seo";
 import { Hero } from "@/components/sections/Hero";
 import { AudienceMarquee } from "@/components/sections/AudienceMarquee";
 import { Statement } from "@/components/sections/Statement";
-import { ServiceIndex } from "@/components/sections/ServiceIndex";
+import { ServiceTiles } from "@/components/sections/ServiceTiles";
+import { Expertise } from "@/components/sections/Expertise";
 import { AboutTeaser } from "@/components/sections/AboutTeaser";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { ResultsBand } from "@/components/sections/ResultsBand";
@@ -26,8 +27,9 @@ export default function HomePage() {
     <>
       <Hero />
       <AudienceMarquee />
+      <ServiceTiles tone="blush" />
       <Statement />
-      <ServiceIndex tone="blush" />
+      <Expertise />
       <AboutTeaser />
       <Testimonials />
       <ResultsBand />

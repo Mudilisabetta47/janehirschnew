@@ -6,12 +6,14 @@ import { SplitHeading } from "@/components/motion/SplitHeading";
 import { ButtonLink } from "@/components/ui/Button";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { Section } from "@/components/ui/Section";
+import { BackdropWord } from "@/components/motion/BackdropWord";
 import { Monogram } from "@/components/ui/Monogram";
 
 export function AboutTeaser() {
   return (
-    <Section labelledBy="about-title" className="overflow-hidden">
-      <div className="wrap grid items-center gap-16 lg:grid-cols-12 lg:gap-10">
+    <Section tone="blush" labelledBy="about-title">
+      <BackdropWord text="Jane" className="-right-[2%] -top-[2%] text-rose/[0.2]" from="6%" to="-8%" />
+      <div className="wrap relative grid items-center gap-16 lg:grid-cols-12 lg:gap-10">
         <div className="relative lg:col-span-5">
           <Parallax from={-30} to={30}>
             <div className="arch relative mx-auto aspect-[4/5] max-w-md overflow-hidden">

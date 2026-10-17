@@ -54,10 +54,10 @@ export const images = {
       height: 1600,
     },
     saloncoaching: {
-      src: "/images/gruppencoaching.jpg",
-      alt: "Live-Demonstration einer Frisur vor einer Gruppe aufmerksamer Teilnehmerinnen",
-      width: 1200,
-      height: 1600,
+      src: "/images/hero.jpg",
+      alt: "Braut mit voluminöser Hochsteckfrisur und Perlenohrringen im Profil, eine Hand ordnet die letzten Strähnen",
+      width: 1013,
+      height: 1800,
     },
     "watch-and-learn": {
       src: "/images/coaching.jpg",

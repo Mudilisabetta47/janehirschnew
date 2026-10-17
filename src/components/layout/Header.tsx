@@ -45,9 +45,8 @@ export function Header() {
               width={96}
               height={96}
               priority
-              className={`h-11 w-11 transition-[filter] duration-500 md:h-12 md:w-12 ${overDark || open ? "invert" : ""}`}
+              className={`h-12 w-12 transition-[filter] duration-500 md:h-14 md:w-14 ${overDark || open ? "invert" : ""}`}
             />
-            <span className="hidden text-[0.8125rem] font-medium uppercase tracking-[0.3em] sm:block">{site.name}</span>
           </Link>
 
           <nav aria-label="Hauptnavigation" className="hidden items-center gap-10 md:flex">

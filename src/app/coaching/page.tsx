@@ -2,7 +2,7 @@ import { pageMetadata, breadcrumbLd } from "@/lib/seo";
 import { images } from "@/content/images";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHero } from "@/components/sections/PageHero";
-import { ServiceIndex } from "@/components/sections/ServiceIndex";
+import { ServiceTiles } from "@/components/sections/ServiceTiles";
 import { Statement } from "@/components/sections/Statement";
 import { CtaBand } from "@/components/sections/CtaBand";
 
@@ -23,7 +23,7 @@ export default function CoachingPage() {
         image={images.coaching}
         crumbs={[{ label: "Start", href: "/" }, { label: "Coaching" }]}
       />
-      <ServiceIndex heading={false} />
+      <ServiceTiles heading={false} tone="bone" />
       <Statement />
       <CtaBand title="Welches Format passt zu dir?" text="Du bist unsicher, welches Coaching das richtige ist? Schreib mir – im kostenlosen Erstgespräch finden wir es gemeinsam heraus." secondary={null} />
       <JsonLd data={breadcrumbLd([{ name: "Start", path: "/" }, { name: "Coaching", path: "/coaching" }])} />

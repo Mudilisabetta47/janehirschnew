@@ -2,6 +2,7 @@ import { site } from "@/content/site";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
+import { BackdropWord } from "@/components/motion/BackdropWord";
 
 export function ContactSection({
   defaultTopic,
@@ -19,7 +20,8 @@ export function ContactSection({
   const dark = tone === "mocha";
   return (
     <Section tone={tone} id={id} labelledBy={`${id}-title`}>
-      <div className="wrap grid gap-16 lg:grid-cols-12">
+      <BackdropWord text="Hallo" className={`-right-[3%] -top-[3%] ${dark ? "text-bone/[0.05]" : "text-rose/[0.18]"}`} from="6%" to="-6%" />
+      <div className="wrap relative grid gap-16 lg:grid-cols-12">
         <Reveal className="lg:col-span-4">
           <p className="eyebrow mb-5">Kontakt</p>
           <h2 id={`${id}-title`} className="display-m mb-6">

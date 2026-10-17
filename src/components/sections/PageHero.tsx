@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { SiteImage } from "@/content/images";
+import { BackdropWord } from "@/components/motion/BackdropWord";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 
 type Crumb = { label: string; href?: string };
@@ -12,6 +13,7 @@ export function PageHero({
   lead,
   crumbs,
   image,
+  backdrop = "Brautstyling",
   children,
 }: {
   eyebrow: string;
@@ -20,6 +22,8 @@ export function PageHero({
   crumbs?: Crumb[];
   /** Optionales Foto im Bogenfenster rechts (ab Tablet), auf dem Smartphone darunter */
   image?: SiteImage | null;
+  /** Großes Signatur-Wort im Hintergrund */
+  backdrop?: string;
   children?: React.ReactNode;
 }) {
   return (
@@ -29,7 +33,8 @@ export function PageHero({
         <path d="M110 700V310a190 190 0 0 1 380 0v390" />
         <path d="M160 700V320a140 140 0 0 1 280 0v380" />
       </svg>
-      <div className={`wrap ${image ? "grid items-end gap-12 lg:grid-cols-12" : ""}`}>
+      <BackdropWord text={backdrop} className="-bottom-[6%] -left-[2%] text-rose/[0.2]" from="-4%" to="6%" />
+      <div className={`wrap relative ${image ? "grid items-end gap-12 lg:grid-cols-12" : ""}`}>
         <div className={image ? "lg:col-span-7" : ""}>
         {crumbs && (
           <nav aria-label="Brotkrumen" className="mb-10 text-[0.78rem] uppercase tracking-[0.2em] text-muted">

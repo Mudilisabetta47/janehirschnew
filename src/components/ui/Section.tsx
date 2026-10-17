@@ -20,7 +20,7 @@ export function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} aria-labelledby={labelledBy} className={`relative py-24 md:py-36 ${tones[tone]} ${className}`}>
+    <section id={id} aria-labelledby={labelledBy} className={`relative overflow-clip py-24 md:py-36 ${tones[tone]} ${className}`}>
       {children}
     </section>
   );
