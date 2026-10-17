@@ -206,7 +206,7 @@ export const services: Service[] = [
     },
     facts: [
       { label: "Dauer", value: "2 Tage Intensivtraining" },
-      { label: "Gruppe", value: "Kleine Gruppe, max. 5 Personen" },
+      { label: "Gruppe", value: "Kleine Gruppe, max. 5 Personen – die Plätze sind begrenzt" },
       { label: "Preis", value: "899 € zzgl. MwSt. pro Person" },
       { label: "Zahlung", value: "Ratenzahlung (2–3 Raten) nach Absprache" },
       { label: "Ort", value: "Nach Absprache" },
@@ -455,7 +455,7 @@ export const services: Service[] = [
       },
       {
         title: "Nachmittag · Praxis – du setzt das Gelernte um",
-        lead: "Jetzt wird es praktisch: Du arbeitest selbst an einem Modell oder Übungskopf und setzt die erlernten Techniken direkt um.",
+        lead: "Jetzt wird es praktisch: Du arbeitest selbst an einem Modell oder Übungskopf und setzt die erlernten Techniken direkt um. Hier hast du die Möglichkeit, alle Fragen zu stellen, deine Technik zu verfeinern und dein Können mit meiner Unterstützung zu perfektionieren.",
         items: [
           "Umsetzung verschiedener Make-up-Looks mit individueller Betreuung",
           "Arbeiten mit Licht und Schatten für ein perfektes Finish",
