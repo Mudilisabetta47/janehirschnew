@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type Stripe from "stripe";
 import { quote } from "@/lib/checkout/pricing";
+import { createToken } from "@/lib/contact/token";
 import { handleCheckout } from "@/lib/checkout/handler";
 import { handleStripeWebhook } from "@/lib/checkout/webhook";
 import { buildBookingMessage } from "@/lib/checkout/booking-mail";
@@ -13,14 +14,41 @@ const req = (body: unknown, extra: Record<string, string> = {}) =>
     body: typeof body === "string" ? body : JSON.stringify(body),
   });
 
+const SECRET = "x".repeat(40);
 const fakeStripe = () => {
   const create = vi.fn<(p: Stripe.Checkout.SessionCreateParams) => Promise<{ url: string }>>(async () => ({ url: "https://checkout.stripe.com/c/pay/cs_test_123" }));
-  return { create, stripe: { checkout: { sessions: { create } } } as unknown as Pick<Stripe, "checkout"> };
+  const customer = vi.fn<(p: Stripe.CustomerCreateParams) => Promise<{ id: string }>>(async () => ({ id: "cus_123" }));
+  return {
+    create,
+    customer,
+    stripe: { checkout: { sessions: { create } }, customers: { create: customer } } as unknown as Pick<Stripe, "checkout" | "customers">,
+  };
 };
+
+/** Gültige Buchungsdaten inkl. Zeit-Token (10 s alt). */
+const valid = (over: Record<string, unknown> = {}) => ({
+  slug: "einzelcoaching",
+  quantity: 1,
+  firstName: "Anna",
+  lastName: "Beispiel",
+  company: "",
+  street: "Musterweg 1",
+  zip: "28844",
+  city: "Weyhe",
+  email: "Anna@Example.com",
+  phone: "",
+  vatId: "",
+  wish: "",
+  accepted: true,
+  website: "",
+  token: createToken(SECRET, Date.now() - 10_000),
+  ...over,
+});
 
 beforeEach(() => {
   (globalThis as { __checkoutLimiter?: unknown }).__checkoutLimiter = undefined;
   process.env.CHECKOUT_RATE_MAX = "50";
+  process.env.FORM_SECRET = SECRET;
   delete process.env.STRIPE_SECRET_KEY;
 });
 
@@ -44,56 +72,92 @@ describe("Preisberechnung", () => {
 
 describe("handleCheckout", () => {
   it("antwortet ohne Stripe-Schlüssel mit 503 (kein Absturz)", async () => {
-    const res = await handleCheckout(req({ slug: "einzelcoaching", quantity: 1, accepted: true }));
-    expect(res.status).toBe(503);
+    expect((await handleCheckout(req(valid()))).status).toBe(503);
   });
-  it("erstellt eine Sitzung mit serverseitig berechnetem Betrag und liefert die URL", async () => {
-    const { create, stripe } = fakeStripe();
-    const res = await handleCheckout(req({ slug: "gruppencoaching", quantity: 2, accepted: true }), { stripe });
+  it("legt Kunde mit Name und Anschrift an und erstellt die Sitzung mit serverseitigem Betrag", async () => {
+    const { create, customer, stripe } = fakeStripe();
+    const res = await handleCheckout(req(valid({ slug: "gruppencoaching", quantity: 2, company: "Salon Test", vatId: "de123456789" })), { stripe });
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ ok: true, url: "https://checkout.stripe.com/c/pay/cs_test_123" });
-    const params = create.mock.calls[0]![0];
-    expect(params.mode).toBe("payment");
-    expect(params.line_items?.[0]).toMatchObject({ quantity: 2, price_data: { currency: "eur", unit_amount: 106981 } });
-    expect(params.metadata).toMatchObject({ slug: "gruppencoaching", quantity: "2", net_cents: "179800" });
-    expect(params.success_url).toContain("{CHECKOUT_SESSION_ID}");
+    expect(customer.mock.calls[0]![0]).toMatchObject({
+      name: "Salon Test",
+      email: "anna@example.com",
+      address: { line1: "Musterweg 1", postal_code: "28844", city: "Weyhe", country: "DE" },
+      metadata: { first_name: "Anna", last_name: "Beispiel", vat_id: "DE123456789" },
+    });
+    const p = create.mock.calls[0]![0];
+    expect(p.customer).toBe("cus_123");
+    expect(p.line_items?.[0]).toMatchObject({ quantity: 2, price_data: { currency: "eur", unit_amount: 106981 } });
+    expect(p.metadata).toMatchObject({ slug: "gruppencoaching", quantity: "2", net_cents: "179800", name: "Anna Beispiel", company: "Salon Test" });
+    expect(p.success_url).toContain("{CHECKOUT_SESSION_ID}");
+  });
+  it("nutzt ohne Firma den vollständigen Namen", async () => {
+    const { customer, stripe } = fakeStripe();
+    await handleCheckout(req(valid()), { stripe });
+    expect(customer.mock.calls[0]![0].name).toBe("Anna Beispiel");
   });
   it("ignoriert Preisangaben des Clients", async () => {
     const { create, stripe } = fakeStripe();
-    await handleCheckout(req({ slug: "einzelcoaching", quantity: 1, accepted: true, amount: 1, price: 1, unit_amount: 1 }), { stripe });
+    await handleCheckout(req(valid({ amount: 1, price: 1, unit_amount: 1 })), { stripe });
     expect(create.mock.calls[0]![0].line_items?.[0]).toMatchObject({ price_data: { unit_amount: 106981 } });
   });
-  it.each([
-    [{ slug: "online-coaching", quantity: 1, accepted: true }, "nicht buchbares Angebot"],
-    [{ slug: "einzelcoaching", quantity: 2, accepted: true }, "zu große Menge"],
-    [{ slug: "einzelcoaching", quantity: 1, accepted: false }, "AGB nicht akzeptiert"],
-    [{ slug: "einzelcoaching", quantity: -1, accepted: true }, "negative Menge"],
-    [{ slug: "einzelcoaching", quantity: 1.5, accepted: true }, "Kommazahl"],
-  ])("lehnt %j ab (%s)", async (body) => {
-    const { create, stripe } = fakeStripe();
-    const res = await handleCheckout(req(body), { stripe });
+  it.each<[Record<string, unknown>, string]>([
+    [{ slug: "online-coaching" }, "nicht buchbares Angebot"],
+    [{ quantity: 2 }, "zu große Menge"],
+    [{ accepted: false }, "AGB nicht akzeptiert"],
+    [{ quantity: -1 }, "negative Menge"],
+    [{ quantity: 1.5 }, "Kommazahl"],
+    [{ firstName: "" }, "Vorname fehlt"],
+    [{ lastName: "A" }, "Nachname zu kurz"],
+    [{ street: "" }, "Straße fehlt"],
+    [{ zip: "123" }, "PLZ ungültig"],
+    [{ city: "" }, "Ort fehlt"],
+    [{ email: "keine-mail" }, "E-Mail ungültig"],
+    [{ vatId: "FR123" }, "USt-IdNr. ungültig"],
+  ])("lehnt %j ab (%s)", async (over) => {
+    const { create, customer, stripe } = fakeStripe();
+    const res = await handleCheckout(req(valid(over)), { stripe });
     expect(res.status).toBe(422);
+    expect(create).not.toHaveBeenCalled();
+    expect(customer).not.toHaveBeenCalled();
+  });
+  it("liefert Feldfehler pro Feld", async () => {
+    const { stripe } = fakeStripe();
+    const res = await handleCheckout(req(valid({ firstName: "", zip: "1" })), { stripe });
+    expect(res.body.ok === false && res.body.fieldErrors).toMatchObject({ firstName: expect.any(String), zip: expect.any(String) });
+  });
+  it("entfernt Steuerzeichen aus Name und Adresse", async () => {
+    const { customer, stripe } = fakeStripe();
+    await handleCheckout(req(valid({ firstName: "An\nna\r", street: "Weg\u0000 1" })), { stripe });
+    const c = customer.mock.calls[0]![0];
+    expect(JSON.stringify(c)).not.toMatch(/\\n|\\r|\\u0000/);
+    expect(c.individual_name).toBe("Anna Beispiel");
+  });
+  it("lehnt Honeypot, zu schnelles und gefälschtes Token ab", async () => {
+    const { create, stripe } = fakeStripe();
+    expect((await handleCheckout(req(valid({ website: "http://spam" })), { stripe })).status).toBe(400);
+    expect((await handleCheckout(req(valid({ token: createToken(SECRET, Date.now()) })), { stripe })).status).toBe(400);
+    expect((await handleCheckout(req(valid({ token: createToken("falsch".repeat(8), Date.now() - 10_000) })), { stripe })).status).toBe(400);
     expect(create).not.toHaveBeenCalled();
   });
   it("lehnt fremde Herkunft, falschen Typ und kaputtes JSON ab", async () => {
     const { stripe } = fakeStripe();
-    const ok = { slug: "einzelcoaching", quantity: 1, accepted: true };
-    expect((await handleCheckout(req(ok, { origin: "https://evil.com" }), { stripe })).status).toBe(403);
-    expect((await handleCheckout(req(ok, { "content-type": "text/plain" }), { stripe })).status).toBe(415);
+    expect((await handleCheckout(req(valid(), { origin: "https://evil.com" }), { stripe })).status).toBe(403);
+    expect((await handleCheckout(req(valid(), { "content-type": "text/plain" }), { stripe })).status).toBe(415);
     expect((await handleCheckout(req("{kaputt"), { stripe })).status).toBe(400);
   });
   it("drosselt mit 429", async () => {
     process.env.CHECKOUT_RATE_MAX = "2";
     (globalThis as { __checkoutLimiter?: unknown }).__checkoutLimiter = undefined;
     const { stripe } = fakeStripe();
-    const ok = () => handleCheckout(req({ slug: "einzelcoaching", quantity: 1, accepted: true }), { stripe });
+    const ok = () => handleCheckout(req(valid()), { stripe });
     expect((await ok()).status).toBe(200);
     expect((await ok()).status).toBe(200);
     expect((await ok()).status).toBe(429);
   });
   it("meldet Stripe-Fehler als 502 ohne Details", async () => {
-    const stripe = { checkout: { sessions: { create: vi.fn().mockRejectedValue(new Error("boom: sk_test_secret")) } } } as unknown as Pick<Stripe, "checkout">;
-    const res = await handleCheckout(req({ slug: "einzelcoaching", quantity: 1, accepted: true }), { stripe });
+    const stripe = { customers: { create: vi.fn().mockRejectedValue(new Error("boom: sk_test_secret")) }, checkout: { sessions: { create: vi.fn() } } } as unknown as Pick<Stripe, "checkout" | "customers">;
+    const res = await handleCheckout(req(valid()), { stripe });
     expect(res.status).toBe(502);
     expect(JSON.stringify(res.body)).not.toContain("sk_test");
   });

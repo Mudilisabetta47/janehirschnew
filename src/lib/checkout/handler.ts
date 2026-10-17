@@ -1,29 +1,26 @@
-import { z } from "zod";
 import type Stripe from "stripe";
-import { services, getService } from "@/content/services";
+import { getService } from "@/content/services";
 import { clientKey, isSameOrigin } from "@/lib/contact/handler";
-import { getConfig as getContactConfig } from "@/lib/contact/config";
+import { getConfig as getContactConfig, getSecret } from "@/lib/contact/config";
+import { verifyToken } from "@/lib/contact/token";
 import { euro, quote, VAT_RATE } from "./pricing";
+import { checkoutSchema, flattenCheckoutErrors, type CheckoutFieldErrors } from "./schema";
 import { getCheckoutConfig, getCheckoutLimiter, getStripe } from "./config";
 
-const bookable = services.filter((s) => s.booking).map((s) => s.slug) as [string, ...string[]];
+export { checkoutSchema };
 
-export const checkoutSchema = z.object({
-  slug: z.enum(bookable, { error: "Dieses Angebot ist nicht online buchbar." }),
-  quantity: z.number({ error: "Bitte gib eine Anzahl an." }).int().min(1).max(20),
-  accepted: z.literal(true, { error: "Bitte bestätige die AGB." }),
-});
-
-export type CheckoutBody = { ok: true; url: string } | { ok: false; code: string; message: string };
+export type CheckoutBody =
+  | { ok: true; url: string }
+  | { ok: false; code: string; message: string; fieldErrors?: CheckoutFieldErrors };
 export type CheckoutResponse = { status: number; body: CheckoutBody; headers?: Record<string, string> };
 
-const fail = (status: number, code: string, message: string, headers?: Record<string, string>): CheckoutResponse => ({
+const fail = (status: number, code: string, message: string, extra?: { headers?: Record<string, string>; fieldErrors?: CheckoutFieldErrors }): CheckoutResponse => ({
   status,
-  headers,
-  body: { ok: false, code, message },
+  headers: extra?.headers,
+  body: { ok: false, code, message, fieldErrors: extra?.fieldErrors },
 });
 
-type Deps = { stripe?: Pick<Stripe, "checkout"> };
+type Deps = { stripe?: Pick<Stripe, "checkout" | "customers"> };
 
 export async function handleCheckout(request: Request, deps: Deps = {}): Promise<CheckoutResponse> {
   const cfg = getCheckoutConfig();
@@ -37,32 +34,61 @@ export async function handleCheckout(request: Request, deps: Deps = {}): Promise
 
   const limit = getCheckoutLimiter().check(clientKey(headers, getContactConfig().trustProxy));
   if (!limit.allowed)
-    return fail(429, "rate-limited", "Zu viele Versuche. Bitte warte kurz und versuche es erneut.", { "Retry-After": String(limit.retryAfterSeconds) });
+    return fail(429, "rate-limited", "Zu viele Versuche. Bitte warte kurz und versuche es erneut.", { headers: { "Retry-After": String(limit.retryAfterSeconds) } });
 
   let raw: unknown;
   try {
     const text = await request.text();
-    if (text.length > 2048) return fail(413, "too-large", "Anfrage zu groß.");
+    if (text.length > 8 * 1024) return fail(413, "too-large", "Anfrage zu groß.");
     raw = JSON.parse(text);
   } catch {
     return fail(400, "bad-json", "Die Anfrage konnte nicht gelesen werden.");
   }
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) return fail(400, "bad-json", "Die Anfrage konnte nicht gelesen werden.");
+
+  // Honeypot: Bots bekommen eine Scheinantwort, es passiert nichts.
+  const hp = (raw as Record<string, unknown>).website;
+  if (typeof hp === "string" && hp.length > 0) return fail(400, "rejected", "Anfrage abgelehnt.");
 
   const parsed = checkoutSchema.safeParse(raw);
-  if (!parsed.success) return fail(422, "validation", parsed.error.issues[0]?.message ?? "Ungültige Eingabe.");
+  if (!parsed.success) return fail(422, "validation", "Bitte prüfe die markierten Felder.", { fieldErrors: flattenCheckoutErrors(parsed.error) });
+  const d = parsed.data;
 
-  const service = getService(parsed.data.slug);
+  const tokenState = verifyToken(d.token, getSecret());
+  if (tokenState === "too-fast") return fail(400, "too-fast", "Das ging sehr schnell – bitte versuche es in ein paar Sekunden noch einmal.");
+  if (tokenState !== "ok") return fail(400, "token", "Die Sicherheitsprüfung ist abgelaufen. Bitte lade die Seite neu.");
+
+  const service = getService(d.slug);
   if (!service?.booking) return fail(422, "validation", "Dieses Angebot ist nicht online buchbar.");
-  if (parsed.data.quantity > service.booking.maxQuantity)
-    return fail(422, "validation", `Online sind höchstens ${service.booking.maxQuantity} buchbar.`);
+  if (d.quantity > service.booking.maxQuantity)
+    return fail(422, "validation", `Online sind höchstens ${service.booking.maxQuantity} buchbar.`, { fieldErrors: { quantity: `Höchstens ${service.booking.maxQuantity}.` } });
 
-  const q = quote(service.booking, parsed.data.quantity);
+  const q = quote(service.booking, d.quantity);
   const stripe = deps.stripe ?? getStripe();
+  const fullName = `${d.firstName} ${d.lastName}`;
+  const vatId = d.vatId.toUpperCase();
 
   try {
+    // Kunde mit Name + Anschrift anlegen, damit die Stripe-Seite nur noch die Zahlung abfragt und die Rechnung stimmt.
+    const customer = await stripe.customers.create({
+      name: d.company || fullName,
+      ...(d.company ? { business_name: d.company, individual_name: fullName } : { individual_name: fullName }),
+      email: d.email,
+      ...(d.phone ? { phone: d.phone } : {}),
+      address: { line1: d.street, postal_code: d.zip, city: d.city, country: "DE" },
+      preferred_locales: ["de"],
+      metadata: { first_name: d.firstName, last_name: d.lastName, ...(d.company ? { company: d.company } : {}), ...(vatId ? { vat_id: vatId } : {}) },
+    });
+
+    const invoiceFields = [
+      ...(d.company ? [{ name: "Ansprechpartner:in", value: fullName.slice(0, 30) }] : []),
+      ...(vatId ? [{ name: "USt-IdNr. Kunde", value: vatId }] : []),
+    ];
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       locale: "de",
+      customer: customer.id,
       line_items: [
         {
           quantity: q.quantity,
@@ -76,21 +102,29 @@ export async function handleCheckout(request: Request, deps: Deps = {}): Promise
           },
         },
       ],
-      billing_address_collection: "required",
-      phone_number_collection: { enabled: true },
-      tax_id_collection: { enabled: true },
-      customer_creation: "always",
       invoice_creation: {
         enabled: true,
-        invoice_data: { description: `${service.title}, ${q.quantity} × ${service.booking.unit}`, metadata: { slug: service.slug } },
+        invoice_data: {
+          description: `${service.title}, ${q.quantity} × ${service.booking.unit}`,
+          metadata: { slug: service.slug },
+          ...(invoiceFields.length ? { custom_fields: invoiceFields } : {}),
+        },
       },
-      custom_fields: [{ key: "wunschzeitraum", label: { type: "custom", custom: "Wunschzeitraum / Anmerkung" }, type: "text", optional: true }],
       custom_text: {
         submit: { message: `Mit der Zahlung akzeptierst du die [AGB](${cfg.siteUrl}/agb). Preise: ${euro(q.netCents)} netto + ${euro(q.vatCents)} MwSt.` },
       },
-      metadata: { slug: service.slug, quantity: String(q.quantity), net_cents: String(q.netCents), vat_cents: String(q.vatCents) },
+      metadata: {
+        slug: service.slug,
+        quantity: String(q.quantity),
+        net_cents: String(q.netCents),
+        vat_cents: String(q.vatCents),
+        name: fullName,
+        ...(d.company ? { company: d.company } : {}),
+        ...(vatId ? { vat_id: vatId } : {}),
+        ...(d.wish ? { wish: d.wish } : {}),
+      },
       success_url: `${cfg.siteUrl}/buchung/erfolg?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${cfg.siteUrl}/coaching/${service.slug}?zahlung=abgebrochen#buchen`,
+      cancel_url: `${cfg.siteUrl}/buchen/${service.slug}?anzahl=${q.quantity}&zahlung=abgebrochen`,
     });
     if (!session.url) return fail(502, "no-url", "Die Zahlungsseite konnte nicht geöffnet werden. Bitte nutze die Anfrage.");
     return { status: 200, body: { ok: true, url: session.url } };

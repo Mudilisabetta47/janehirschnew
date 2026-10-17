@@ -9,18 +9,19 @@ export function buildBookingMessage(session: Stripe.Checkout.Session) {
   const md = session.metadata ?? {};
   const cd = session.customer_details;
   const addr = cd?.address;
-  const wunsch = session.custom_fields?.find((f) => f.key === "wunschzeitraum")?.text?.value;
+  const wunsch = md.wish;
   const subject = headerSafe(`Neue bezahlte Buchung: ${md.slug ?? "Coaching"} – ${cd?.name ?? "Kunde"}`);
   const lines = [
     `Angebot:       ${md.slug ?? "?"}  (Anzahl: ${md.quantity ?? "?"})`,
     `Betrag brutto: ${euro(session.amount_total ?? 0)}  (netto ${euro(Number(md.net_cents ?? 0))}, MwSt. ${euro(Number(md.vat_cents ?? 0))})`,
     `Zahlstatus:    ${session.payment_status}`,
     "",
-    `Name:          ${cd?.name ?? ""}`,
+    `Name:          ${md.name ?? cd?.name ?? ""}`,
+    md.company ? `Firma:         ${md.company}` : null,
     `E-Mail:        ${cd?.email ?? ""}`,
     cd?.phone ? `Telefon:       ${cd.phone}` : null,
     addr ? `Anschrift:     ${[addr.line1, addr.line2, [addr.postal_code, addr.city].filter(Boolean).join(" "), addr.country].filter(Boolean).join(", ")}` : null,
-    cd?.tax_ids?.length ? `USt-IdNr.:     ${cd.tax_ids.map((t) => t.value).join(", ")}` : null,
+    md.vat_id ? `USt-IdNr.:     ${md.vat_id}` : null,
     wunsch ? `Wunschzeitraum: ${wunsch}` : null,
     "",
     `Stripe-Sitzung: ${session.id}`,

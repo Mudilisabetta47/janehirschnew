@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getService, services } from "@/content/services";
@@ -204,9 +203,7 @@ export default async function ServicePage({ params }: { params: Promise<Params> 
       {s.booking && checkoutEnabled && (
         <Section id="buchen" labelledBy="buchen-title">
           <div className="wrap">
-            <Suspense>
-              <BookingPanel slug={s.slug} title={s.title} booking={s.booking} />
-            </Suspense>
+            <BookingPanel slug={s.slug} title={s.title} booking={s.booking} />
           </div>
         </Section>
       )}

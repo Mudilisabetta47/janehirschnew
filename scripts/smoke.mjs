@@ -14,7 +14,7 @@ const ok = (cond, label, extra = "") => {
 const get = (path, init = {}) => fetch(BASE + path, { redirect: "manual", ...init });
 
 // 1) Seiten liefern 200 + sinnvolle SEO-Grundlagen
-const pages = ["/", "/coaching", ...services.map((s) => `/coaching/${s.slug}`), "/ueber-mich", "/kontakt", "/impressum", "/datenschutz", "/agb"];
+const pages = ["/", "/coaching", ...services.map((s) => `/coaching/${s.slug}`), "/ueber-mich", "/kontakt", "/impressum", "/datenschutz", "/agb", "/buchen/einzelcoaching"];
 for (const p of pages) {
   const res = await get(p);
   const html = await res.text();
@@ -51,7 +51,7 @@ ok(!home.headers.has("x-powered-by"), "kein X-Powered-By");
 const robots = await (await get("/robots.txt")).text();
 ok(/User-Agent/i.test(robots), "robots.txt vorhanden");
 const sitemap = await (await get("/sitemap.xml")).text();
-ok(pages.filter((p) => !["/impressum", "/datenschutz", "/agb"].includes(p)).every((p) => sitemap.includes(`${p === "/" ? "" : p}</loc>`)), "sitemap.xml enthält alle Seiten");
+ok(pages.filter((p) => !["/impressum", "/datenschutz", "/agb", "/buchen/einzelcoaching"].includes(p)).every((p) => sitemap.includes(`${p === "/" ? "" : p}</loc>`)), "sitemap.xml enthält alle Seiten");
 
 // 6) Kontakt-API
 const tokenRes = await get("/api/contact/token");
