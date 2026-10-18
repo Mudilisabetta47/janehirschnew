@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, ButtonLink } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { useCart } from "@/components/cart/CartProvider";
 import { euro, quote, VAT_RATE } from "@/lib/checkout/pricing";
 import type { Service } from "@/content/services";
@@ -65,14 +66,15 @@ export function BookingPanel({ slug, title, booking }: Props) {
           </div>
         )}
 
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-          <Button type="button" onClick={() => add(slug, quantity, true)}>
+        <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-5">
+          <Button type="button" className="whitespace-nowrap" onClick={() => add(slug, quantity, true)}>
             In den Warenkorb
           </Button>
           <Button
             type="button"
             variant="outline"
             arrow={false}
+            className="whitespace-nowrap"
             onClick={() => {
               add(slug, quantity, false);
               router.push("/kasse");
@@ -80,9 +82,9 @@ export function BookingPanel({ slug, title, booking }: Props) {
           >
             Sofort buchen
           </Button>
-          <ButtonLink href={`/kontakt?thema=${slug}#anfrage`} variant="ghost" arrow={false} className="!border-0 !px-0 !text-ink underline underline-offset-4">
+          <Link href={`/kontakt?thema=${slug}#anfrage`} className="link-line py-2 text-[0.78rem] uppercase tracking-[0.18em]">
             Lieber Anfrage / Raten
-          </ButtonLink>
+          </Link>
         </div>
         <p className="mt-5 text-sm text-muted">Das Angebot richtet sich an Unternehmer und Gewerbetreibende. Eventuelle Fahrtkosten werden – falls zutreffend – separat abgestimmt.</p>
       </div>

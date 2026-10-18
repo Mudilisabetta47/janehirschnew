@@ -1,3 +1,4 @@
+import "@/lib/zodConfig";
 import { z } from "zod";
 import { topicValues } from "./topics";
 

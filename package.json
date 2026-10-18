@@ -13,7 +13,8 @@
     "test": "vitest run",
     "check": "npm run typecheck && npm run lint && npm run test && npm run build",
     "redirects:export": "node scripts/export-redirects.mjs",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "test:browsers": "node scripts/browsers.mjs"
   },
   "dependencies": {
     "motion": "^14.3.0",
@@ -32,6 +33,7 @@
     "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.2",
+    "playwright": "^1.64.1",
     "postcss": "^8.5.30",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",

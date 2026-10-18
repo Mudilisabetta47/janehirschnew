@@ -384,3 +384,7 @@
     --frame-gap: 20px;
   }
 }
+
+.backdrop-word::before {
+  content: attr(data-text);
+}

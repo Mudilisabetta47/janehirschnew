@@ -24,9 +24,12 @@ export function BackdropWord({
   const x = useTransform(scrollYProgress, [0, 1], [from, to]);
   return (
     <div ref={ref} aria-hidden="true" className={`pointer-events-none absolute select-none whitespace-nowrap ${className}`}>
-      <motion.span style={reduce ? undefined : { x }} className="script block will-change-transform text-[clamp(9rem,28vw,26rem)] leading-[0.8]">
-        {text}
-      </motion.span>
+      {/* Text als CSS-Pseudoinhalt: rein dekorativ, kein Text im DOM (kein Kontrast-/Screenreader-Thema) */}
+      <motion.span
+        data-text={text}
+        style={reduce ? undefined : { x }}
+        className="backdrop-word script block will-change-transform text-[clamp(9rem,28vw,26rem)] leading-[0.8]"
+      />
     </div>
   );
 }
