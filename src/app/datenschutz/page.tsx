@@ -13,6 +13,7 @@ export default function PrivacyPage() {
       title="Datenschutz"
       lead="Wie mit deinen Daten auf dieser Website umgegangen wird – kurz, verständlich und vollständig."
       todo={[
+        "Backend (Datenbank auf dem Server): Speicherung von Anfragen und Bestellungen, automatische Löschung erledigter Anfragen nach 180 Tagen, Aufbewahrung von Bestellungen (10 Jahre) und Zugriff nur durch Jane Hirsch – Rechtsgrundlage und Fristen prüfen lassen.",
         "Stripe als Zahlungsdienstleister ist ergänzt (Abschnitt 5): Konto, AV-Vertrag/Verantwortlichkeit und Rechnungseinstellungen klären.",
         "IONOS SE als Hoster und Mailanbieter ist eingetragen (laut Auftraggeber). Offen: Serverstandort/Paket und Speicherdauer der Server-Logfiles aus dem IONOS-Vertrag übernehmen; Auftragsverarbeitungsvertrag (AVV) mit IONOS abschließen bzw. bestätigen.",
         "Rechtsgrundlage der Formularverarbeitung (Art. 6 Abs. 1 lit. b bzw. f statt reiner Einwilligung) und Wortlaut der Zustimmungs-Checkbox rechtlich bestätigen.",
@@ -33,7 +34,7 @@ export default function PrivacyPage() {
 
       <h2>2. Das Wichtigste in Kürze</h2>
       <ul>
-        <li>Diese Website setzt <strong>keine Cookies</strong> und <strong>keine Analyse- oder Marketing-Werkzeuge</strong> ein. Der Warenkorb merkt sich deine Auswahl nur lokal in deinem Browser.</li>
+        <li>Diese Website setzt <strong>keine Cookies</strong> und <strong>keine Analyse- oder Marketing-Werkzeuge</strong> ein. Der Warenkorb merkt sich deine Auswahl nur lokal in deinem Browser. Anfragen und Bestellungen werden zur Bearbeitung in einer passwortgeschützten Datenbank auf dem Server gespeichert.</li>
         <li>Schriften werden vom eigenen Server ausgeliefert – es werden keine Daten an Google Fonts oder andere Schriftanbieter übertragen.</li>
         <li>Personenbezogene Daten verarbeite ich nur, wenn du mir schreibst (Kontaktformular, E-Mail, Telefon) und für den technisch notwendigen Betrieb der Seite.</li>
       </ul>
@@ -51,10 +52,10 @@ export default function PrivacyPage() {
         Wenn du das Formular nutzt, verarbeite ich die Angaben, die du eingibst: Name, E-Mail-Adresse, optional Telefonnummer und Salonname, das gewählte Thema, deine Nachricht sowie den Zeitpunkt deiner Bestätigung der Datenschutzhinweise. Die Daten dienen ausschließlich der Bearbeitung deiner Anfrage und möglichen Anschlussfragen.
       </p>
       <p>
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen auf deine Anfrage) bzw. – bei allgemeinen Fragen – Art. 6 Abs. 1 lit. f DSGVO. Die Nachricht wird per verschlüsselter Verbindung an mein E-Mail-Postfach übermittelt (Versand über den E-Mail-Dienst der IONOS SE; dort liegt auch das empfangende Postfach). Auf dem Server der Website werden Formularinhalte <strong>nicht gespeichert</strong>.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen auf deine Anfrage) bzw. – bei allgemeinen Fragen – Art. 6 Abs. 1 lit. f DSGVO. Die Nachricht wird per verschlüsselter Verbindung an mein E-Mail-Postfach übermittelt (Versand über den E-Mail-Dienst der IONOS SE; dort liegt auch das empfangende Postfach). Zusätzlich wird die Anfrage zur Bearbeitung in einer passwortgeschützten Datenbank auf dem Server gespeichert (nur Jane Hirsch hat Zugriff), damit keine Anfrage verloren geht und ich sie nachverfolgen kann.
       </p>
       <p>
-        Deine Anfrage bleibt in meinem Postfach, bis dein Anliegen erledigt ist, du Löschung verlangst oder der Zweck entfällt. Gesetzliche Aufbewahrungspflichten (z. B. für Handelsbriefe) bleiben unberührt.
+        Deine Anfrage bleibt in meinem Postfach und in der Datenbank, bis dein Anliegen erledigt ist, du Löschung verlangst oder der Zweck entfällt; erledigte Anfragen werden spätestens nach 180 Tagen automatisch gelöscht. Gesetzliche Aufbewahrungspflichten (z. B. für Handelsbriefe) bleiben unberührt.
       </p>
 
       <h3>Spam-Schutz</h3>
@@ -64,7 +65,7 @@ export default function PrivacyPage() {
 
       <h2>5. Online-Buchung und Zahlung (Stripe)</h2>
       <p>
-        Wenn du ein Coaching online buchst, gibst du zuerst auf der Buchungsseite dieser Website Vorname, Nachname, Anschrift, E-Mail-Adresse sowie optional Firma, Telefonnummer, USt-IdNr. und einen Wunschzeitraum ein. Diese Angaben werden an unseren Zahlungsdienstleister Stripe Payments Europe, Ltd., 1 Grand Canal Street Lower, Grand Canal Dock, Dublin, Irland (Muttergesellschaft: Stripe, Inc., USA) übermittelt, der damit deinen Kundendatensatz und die Rechnung erstellt. Anschließend wirst du zur Bezahlseite von Stripe weitergeleitet und gibst dort dein Zahlungsmittel ein. Stripe verarbeitet diese Daten in eigener Verantwortung bzw. als Auftragsverarbeiter; Kartendaten gelangen nie auf diese Website. Auf dem Server dieser Website werden die Buchungsdaten nicht gespeichert.
+        Wenn du ein Coaching online buchst, gibst du zuerst auf der Buchungsseite dieser Website Vorname, Nachname, Anschrift, E-Mail-Adresse sowie optional Firma, Telefonnummer, USt-IdNr. und einen Wunschzeitraum ein. Diese Angaben werden an unseren Zahlungsdienstleister Stripe Payments Europe, Ltd., 1 Grand Canal Street Lower, Grand Canal Dock, Dublin, Irland (Muttergesellschaft: Stripe, Inc., USA) übermittelt, der damit deinen Kundendatensatz und die Rechnung erstellt. Anschließend wirst du zur Bezahlseite von Stripe weitergeleitet und gibst dort dein Zahlungsmittel ein. Stripe verarbeitet diese Daten in eigener Verantwortung bzw. als Auftragsverarbeiter; Kartendaten gelangen nie auf diese Website. Die Bestellung (Name, Anschrift, E-Mail, ggf. Telefon, Firma, USt-IdNr., gebuchte Leistung, Betrag, Zahlstatus, Wunschzeitraum und interne Notizen) wird zusätzlich in der passwortgeschützten Datenbank dieser Website gespeichert, um den Termin zu organisieren und die gesetzlichen Aufbewahrungspflichten zu erfüllen (siehe Abschnitt 10).
       </p>
       <p>
         Ich erhalte nach erfolgreicher Zahlung eine Benachrichtigung per E-Mail mit Name, Kontaktdaten, Anschrift, gebuchtem Angebot, Betrag und deinem Wunschzeitraum, um den Termin abzustimmen und die Leistung zu erbringen. Rechtsgrundlagen sind Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung) und Art. 6 Abs. 1 lit. c DSGVO (steuer- und handelsrechtliche Aufbewahrung). Eine Datenübermittlung in die USA kann nicht ausgeschlossen werden; sie stützt sich auf die Angemessenheitsentscheidung (EU-US Data Privacy Framework) bzw. Standardvertragsklauseln. Weitere Informationen: stripe.com/de/privacy. <Fill>Auftragsverarbeitung/Verantwortlichkeit mit Stripe-Konto und Steuerberatung abstimmen</Fill>
@@ -77,7 +78,7 @@ export default function PrivacyPage() {
 
       <h2>7. Cookies und Tracking</h2>
       <p>
-        Diese Website setzt keine Cookies. Nur wenn du ein Coaching in den Warenkorb legst, speichert dein Browser diese Auswahl (Angebot und Anzahl, keine Personendaten) lokal im Endgerät (localStorage). Das ist für die Warenkorb-Funktion technisch erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG) und wird nach der Bestellung bzw. beim Entfernen gelöscht; du kannst den Speicher jederzeit über die Browsereinstellungen löschen. Es gibt kein Tracking und keine Einwilligungsabfrage. Beim Wechsel zur Bezahlseite von Stripe (Abschnitt 5) gelten dort die Cookie- und Datenschutzbestimmungen von Stripe.
+        Besucherinnen und Besucher erhalten keine Cookies. (Für den passwortgeschützten Verwaltungsbereich, den nur die Betreiberin nutzt, wird nach dem Login ein technisch notwendiges Sitzungs-Cookie gesetzt.) Nur wenn du ein Coaching in den Warenkorb legst, speichert dein Browser diese Auswahl (Angebot und Anzahl, keine Personendaten) lokal im Endgerät (localStorage). Das ist für die Warenkorb-Funktion technisch erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG) und wird nach der Bestellung bzw. beim Entfernen gelöscht; du kannst den Speicher jederzeit über die Browsereinstellungen löschen. Es gibt kein Tracking und keine Einwilligungsabfrage. Beim Wechsel zur Bezahlseite von Stripe (Abschnitt 5) gelten dort die Cookie- und Datenschutzbestimmungen von Stripe.
       </p>
 
       <h2>8. Links zu sozialen Netzwerken</h2>

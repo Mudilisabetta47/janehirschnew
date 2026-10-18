@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 type Status = "idle" | "sending" | "success" | "error";
 
 type ApiResult =
-  | { ok: true; mode: "send" | "dry-run" }
+  | { ok: true; mode: "send" | "dry-run"; stored: boolean }
   | { ok: false; code: string; message: string; fieldErrors?: FieldErrors };
 
 const inputBase =
@@ -20,7 +20,7 @@ export function ContactForm({ defaultTopic, tone = "light" }: { defaultTopic?: s
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [globalError, setGlobalError] = useState("");
-  const [mode, setMode] = useState<"send" | "dry-run">("send");
+  const [previewOnly, setPreviewOnly] = useState(false);
   const [topic, setTopic] = useState<TopicValue>(isTopic(defaultTopic) ? defaultTopic : "erstgespraech");
   const tokenRef = useRef("");
   const successRef = useRef<HTMLDivElement>(null);
@@ -88,7 +88,8 @@ export function ContactForm({ defaultTopic, tone = "light" }: { defaultTopic?: s
       });
       const json = (await res.json()) as ApiResult;
       if (json.ok) {
-        setMode(json.mode);
+        // Hinweis nur, wenn die Anfrage weder gespeichert noch per Mail versendet wurde (reine Vorschau)
+        setPreviewOnly(json.mode === "dry-run" && !json.stored);
         setStatus("success");
         return;
       }
@@ -110,7 +111,7 @@ export function ContactForm({ defaultTopic, tone = "light" }: { defaultTopic?: s
         <p className="max-w-lg text-muted">
           Deine Anfrage ist bei mir eingegangen. Ich antworte dir persönlich per E-Mail oder Telefon – meist innerhalb weniger Werktage.
         </p>
-        {mode === "dry-run" && (
+        {previewOnly && (
           <p className="mt-6 max-w-lg rounded-sm border border-rose-deep/40 bg-blush/60 p-4 text-sm text-ink">
             Vorschau-Modus: Es wurde <strong>keine E-Mail versendet</strong>, weil der Mailversand noch nicht freigegeben ist.
           </p>

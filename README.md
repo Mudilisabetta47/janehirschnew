@@ -25,6 +25,9 @@ Produktionsvorschau: `npm run build && npm start`. Alle Prüfungen: `npm run che
 ## Inhalte pflegen
 Alle Texte, Preise, Kontaktdaten: `src/content/*.ts`. Fotos: Dateien nach `public/images/`, dann in `src/content/images.ts` eintragen. Stimmen: `src/content/testimonials.ts`. Alte URLs: `src/content/redirects.ts`, danach `npm run redirects:export`.
 
+## Backend für Anfragen & Bestellungen
+`/admin` (Passwort). Einrichten: `npm run admin:hash` → Zeile in `.env.local`; Details in `docs/02-technik.md`. Tests: `npm run test:backend` (Ende-zu-Ende, siehe Kopfkommentar in `scripts/backend-e2e.mjs`), `npm run test:browsers` (Chromium/WebKit/Firefox).
+
 ## Prüfergebnisse
 Siehe Abschnitt unten (Stand der Auslieferung).
 

@@ -8,6 +8,7 @@ import { handleCheckout } from "@/lib/checkout/handler";
 import { handleStripeWebhook } from "@/lib/checkout/webhook";
 import { buildBookingMessage } from "@/lib/checkout/booking-mail";
 import { services } from "@/content/services";
+import { resetDb } from "@/lib/db/db";
 
 const req = (body: unknown, extra: Record<string, string> = {}) =>
   new Request("https://a.de/api/checkout", {
@@ -50,6 +51,9 @@ beforeEach(() => {
   (globalThis as { __checkoutLimiter?: unknown }).__checkoutLimiter = undefined;
   process.env.CHECKOUT_RATE_MAX = "50";
   process.env.FORM_SECRET = SECRET;
+  process.env.DATA_DIR = ":memory:";
+  delete process.env.STORE_ENABLED;
+  resetDb();
   delete process.env.STRIPE_SECRET_KEY;
 });
 
@@ -220,7 +224,8 @@ describe("Stripe-Webhook", () => {
     await handleStripeWebhook(wreq(), { stripe: hook({ type: "charge.refunded", data: { object: {} } }), notify });
     expect(notify).not.toHaveBeenCalled();
   });
-  it("antwortet 500, wenn die Benachrichtigung scheitert (Stripe wiederholt)", async () => {
+  it("ohne Speicher: antwortet 500, wenn die Benachrichtigung scheitert (Stripe wiederholt)", async () => {
+    process.env.STORE_ENABLED = "false";
     const notify = vi.fn().mockRejectedValue(new Error("smtp down"));
     const res = await handleStripeWebhook(wreq(), { stripe: hook({ type: "checkout.session.completed", data: { object: session } }), notify });
     expect(res.status).toBe(500);

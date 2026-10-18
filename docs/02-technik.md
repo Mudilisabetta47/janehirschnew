@@ -42,6 +42,15 @@ Grenzen: Das Rate-Limit liegt im Prozessspeicher. Bei mehreren Instanzen/Serverl
 - Preise werden **nie** vom Client übernommen: `/api/checkout` berechnet alles aus `src/content/services.ts` (`quoteCart`), legt den Stripe-Kunden mit Name/Anschrift an und erzeugt die Zahlungssitzung. Webhook `/api/stripe/webhook` benachrichtigt Jane nach bezahlter Sitzung.
 - Aus, bis `STRIPE_SECRET_KEY` gesetzt ist; Anzeige der Buchung per `NEXT_PUBLIC_CHECKOUT_ENABLED`.
 
+## Backend (Anfragen, Bestellungen, Kundenservice)
+- **Speicher:** SQLite-Datei `$DATA_DIR/jane.db` (Node ≥ 22.5, eingebautes `node:sqlite`, keine native Abhängigkeit). Tabellen: `inquiries`, `orders`, `activity`. Das Verzeichnis muss auf dem Hosting **persistent** sein (nicht bei jedem Deploy neu angelegt) und gesichert werden (Dateikopie genügt). `STORE_ENABLED=false` schaltet die Speicherung ab.
+- **Nichts geht verloren:** Das Kontaktformular speichert zuerst, mailt danach. Scheitert die Mail, bleibt die Anfrage im Backend sichtbar (Mailstatus „fehlgeschlagen“). Der Stripe-Webhook speichert Bestellungen idempotent über die Sitzungs-ID, benachrichtigt nur beim Übergang auf „bezahlt“ und verarbeitet `async_payment_failed` und `charge.refunded`.
+- **Zugang:** `/admin` mit Passwort (scrypt-Hash in `ADMIN_PASSWORD_HASH`, erzeugen mit `npm run admin:hash`), signiertes Sitzungs-Cookie (httpOnly, SameSite=Strict, Secure in Produktion, 8 h), Login-Drosselung (5 Versuche / 15 min), `noindex` + `no-store`, in `robots.txt` gesperrt. Besucher erhalten kein Cookie.
+- **Funktionen:** Übersicht mit Kennzahlen und „Bereitschafts-Check“, Anfragen und Bestellungen mit Suche/Filter, Status, interne Notizen, Verlaufsprotokoll, Antwort-Vorlagen (öffnen das Mailprogramm), Löschen auf Wunsch, CSV-Export (Excel-tauglich, gegen Formel-Einschleusung geschützt).
+- **Datenschutz:** Erledigte/Spam-Anfragen werden nach `RETENTION_INQUIRY_DAYS` (Standard 180) automatisch gelöscht; Bestellungen bleiben (gesetzliche Aufbewahrung).
+- **Stripe-Webhook abonnieren:** `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `charge.refunded`.
+- **Grenzen:** SQLite = ein Server. Bei mehreren Instanzen/Serverless auf Postgres umstellen (nur `src/lib/db/` ist betroffen). Rate-Limits liegen im Arbeitsspeicher (siehe oben).
+
 ## Sicherheits-Header
 CSP (nur eigene Quellen, kein Drittanbieter), HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy; `X-Powered-By` entfernt.
 

@@ -87,5 +87,13 @@ ok((await get("/api/checkout")).status === 405, "API /api/checkout: GET → 405"
 const wh = await get("/api/stripe/webhook", { method: "POST", body: "{}" });
 ok([400, 503].includes(wh.status), "Webhook ohne Signatur wird abgelehnt", `status=${wh.status}`);
 
+// 8) Backend ist ohne Login gesperrt
+const adminRes = await get("/admin");
+ok([302, 307, 308].includes(adminRes.status) && (adminRes.headers.get("location") ?? "").includes("/admin/login"), "Backend /admin ohne Login → Weiterleitung auf Login", `status=${adminRes.status}`);
+ok((await get("/admin/login")).status === 200, "Backend-Login erreichbar");
+ok((await get("/admin/export/anfragen")).status === 401, "Backend-CSV ohne Login → 401");
+ok((await get("/admin/anfragen/1")).status !== 200, "Backend-Detailseite ohne Login nicht abrufbar");
+ok(/noindex/i.test((await get("/admin/login")).headers.get("x-robots-tag") ?? ""), "Backend sendet X-Robots-Tag noindex");
+
 console.log(failed ? `\n${failed} Prüfung(en) fehlgeschlagen.` : "\nAlle Prüfungen bestanden.");
 process.exit(failed ? 1 : 0);

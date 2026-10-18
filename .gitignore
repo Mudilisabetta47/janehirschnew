@@ -8,3 +8,8 @@ out
 next-env.d.ts
 .DS_Store
 coverage
+# Backend-Datenbank (enthält personenbezogene Daten!)
+data/
+*.db
+*.db-wal
+*.db-shm

@@ -5,6 +5,8 @@ import { RateLimiter } from "@/lib/contact/rateLimit";
 import { buildMessage, headerSafe } from "@/lib/contact/mail";
 import { clientKey, handleContact, isSameOrigin } from "@/lib/contact/handler";
 import { getSecret } from "@/lib/contact/config";
+import { resetDb } from "@/lib/db/db";
+import { listInquiries } from "@/lib/db/repo";
 
 const SECRET = "x".repeat(40);
 const T0 = 1_700_000_000_000;
@@ -93,6 +95,9 @@ describe("Origin & Client-Key", () => {
 
 describe("handleContact (Ende-zu-Ende ohne Versand)", () => {
   beforeEach(() => {
+    process.env.DATA_DIR = ":memory:";
+    delete process.env.STORE_ENABLED;
+    resetDb();
     delete process.env.SMTP_HOST;
     delete process.env.MAIL_SEND_ENABLED;
     process.env.FORM_SECRET = SECRET;
@@ -111,11 +116,21 @@ describe("handleContact (Ende-zu-Ende ohne Versand)", () => {
   it("liefert im Trockenlauf Erfolg ohne zu versenden", async () => {
     const res = await handleContact(req(valid({ token: createToken(getSecret(), Date.now() - 10_000) })));
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ ok: true, mode: "dry-run" });
+    expect(res.body).toEqual({ ok: true, mode: "dry-run", stored: true });
+    const saved = listInquiries();
+    expect(saved).toHaveLength(1);
+    expect(saved[0]).toMatchObject({ name: "Anna Beispiel", email: "anna@example.com", topic: "einzelcoaching", status: "neu", mail_state: "nicht_konfiguriert" });
   });
-  it("antwortet Bots (Honeypot) scheinbar erfolgreich", async () => {
+  it("antwortet Bots (Honeypot) scheinbar erfolgreich – und speichert nichts", async () => {
     const res = await handleContact(req(valid({ website: "http://spam.example" })));
     expect(res.status).toBe(200);
+    expect(listInquiries()).toHaveLength(0);
+  });
+  it("speichert nicht, wenn die Speicherung abgeschaltet ist (reiner Trockenlauf)", async () => {
+    process.env.STORE_ENABLED = "false";
+    const res = await handleContact(req(valid({ token: createToken(getSecret(), Date.now() - 10_000) })));
+    expect(res.body).toEqual({ ok: true, mode: "dry-run", stored: false });
+    expect(listInquiries()).toHaveLength(0);
   });
   it("lehnt fremde Herkunft, falschen Typ, kaputtes JSON und Validierungsfehler ab", async () => {
     expect((await handleContact(req(valid(), { origin: "https://evil.com" }))).status).toBe(403);

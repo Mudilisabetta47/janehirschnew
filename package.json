@@ -14,7 +14,9 @@
     "check": "npm run typecheck && npm run lint && npm run test && npm run build",
     "redirects:export": "node scripts/export-redirects.mjs",
     "smoke": "node scripts/smoke.mjs",
-    "test:browsers": "node scripts/browsers.mjs"
+    "test:browsers": "node scripts/browsers.mjs",
+    "admin:hash": "node scripts/admin-hash.mjs",
+    "test:backend": "node scripts/backend-e2e.mjs"
   },
   "dependencies": {
     "motion": "^14.3.0",

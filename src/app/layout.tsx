@@ -7,6 +7,7 @@ import { MotionProvider } from "@/components/motion/MotionProvider";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { JsonLd } from "@/components/JsonLd";
 import { personLd, websiteLd } from "@/lib/seo";
 
@@ -61,9 +62,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <MotionProvider>
           <CartProvider>
-            <Header />
+            <SiteChrome>
+              <Header />
+            </SiteChrome>
             <main id="inhalt">{children}</main>
-            <Footer />
+            <SiteChrome>
+              <Footer />
+            </SiteChrome>
           </CartProvider>
         </MotionProvider>
         <JsonLd data={[websiteLd(), personLd()]} />
