@@ -1,0 +1,8 @@
+[Unit]
+Description=Backup der Jane-Hirsch-Datenbank
+
+[Service]
+Type=oneshot
+User=jane
+Group=jane
+ExecStart=/usr/local/bin/jane-hirsch-backup

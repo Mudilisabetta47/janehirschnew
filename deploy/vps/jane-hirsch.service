@@ -1,0 +1,26 @@
+[Unit]
+Description=Jane Hirsch Website (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=jane
+Group=jane
+WorkingDirectory=/srv/jane-hirsch/app
+EnvironmentFile=/srv/jane-hirsch/.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start -p 3110 -H 127.0.0.1
+Restart=always
+RestartSec=3
+# Härtung: nur Daten und Cache sind beschreibbar
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/srv/jane-hirsch/data /srv/jane-hirsch/app/.next/cache
+
+[Install]
+WantedBy=multi-user.target
