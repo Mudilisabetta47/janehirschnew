@@ -21,6 +21,6 @@ export function readiness(env: NodeJS.ProcessEnv = process.env): Check[] {
     { label: "Kaufbereich auf Angebotsseiten sichtbar", ok: env.NEXT_PUBLIC_CHECKOUT_ENABLED === "true", detail: "NEXT_PUBLIC_CHECKOUT_ENABLED (Build-Variable)" },
     { label: "Öffentliche Adresse nicht localhost", ok: !/localhost|127\.0\.0\.1/.test(site.url), detail: site.url },
     { label: "Suchmaschinen-Sperre aus (Livebetrieb)", ok: env.SITE_NOINDEX !== "true", detail: env.SITE_NOINDEX === "true" ? "SITE_NOINDEX=true – Staging" : "Seite ist indexierbar" },
-    { label: "Proxy-Header vertrauenswürdig (TRUST_PROXY)", ok: env.TRUST_PROXY === "true", detail: "nur hinter Reverse-Proxy auf true setzen; sonst greift das Rate-Limit grob" },
+    { label: "Proxy-Header vertrauenswürdig (TRUST_PROXY)", ok: env.TRUST_PROXY === "true" || env.TRUST_PROXY === "cloudflare", detail: "hinter Cloudflare: cloudflare, sonst hinter Reverse-Proxy: true; ohne Proxy leer lassen (Rate-Limit greift dann grob)" },
   ];
 }

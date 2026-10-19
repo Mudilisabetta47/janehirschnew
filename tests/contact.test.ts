@@ -86,6 +86,11 @@ describe("Origin & Client-Key", () => {
     expect(isSameOrigin(new Headers({ host: "a.de" }))).toBe(false);
     expect(isSameOrigin(new Headers({ host: "a.de", "sec-fetch-site": "same-origin" }))).toBe(true);
   });
+  it("Cloudflare-Modus nutzt nur CF-Connecting-IP und ignoriert gefälschtes X-Forwarded-For", () => {
+    const h = new Headers({ "x-forwarded-for": "6.6.6.6", "cf-connecting-ip": "9.9.9.9", "user-agent": "t" });
+    expect(clientKey(h, "cloudflare")).toBe("ip:9.9.9.9");
+    expect(clientKey(new Headers({ "x-forwarded-for": "6.6.6.6", "user-agent": "t" }), "cloudflare")).toMatch(/^ua:/);
+  });
   it("vertraut Proxy-Headern nur bei TRUST_PROXY", () => {
     const h = new Headers({ "x-forwarded-for": "1.2.3.4, 5.6.7.8", "user-agent": "t" });
     expect(clientKey(h, true)).toBe("ip:1.2.3.4");

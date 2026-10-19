@@ -35,7 +35,7 @@ Inhalte stehen getrennt vom Layout: Texte/Preise ändern = nur `src/content/*.ts
 8. **Datensparsam**: keine Speicherung auf dem Server, IP nur kurz im RAM für das Limit, keine IP in der Mail.
 9. **Trockenlauf als Standard**: Versand nur, wenn `SMTP_HOST`, `CONTACT_TO`, `CONTACT_FROM` gesetzt **und** `MAIL_SEND_ENABLED=true`. Sonst zeigt die Erfolgsmeldung einen deutlichen Vorschau-Hinweis.
 
-Grenzen: Das Rate-Limit liegt im Prozessspeicher. Bei mehreren Instanzen/Serverless → Redis/Upstash ergänzen. Hinter einem Reverse-Proxy `TRUST_PROXY=true` setzen, damit die Client-IP aus `X-Forwarded-For` gelesen wird (nur wenn der Proxy den Header überschreibt!).
+Grenzen: Das Rate-Limit liegt im Prozessspeicher. Bei mehreren Instanzen/Serverless → Redis/Upstash ergänzen. Hinter einem Reverse-Proxy `TRUST_PROXY=true` setzen, damit die Client-IP aus `X-Forwarded-For` gelesen wird (nur wenn der Proxy den Header überschreibt!). **Hinter Cloudflare `TRUST_PROXY=cloudflare`** (liest `CF-Connecting-IP`; Cloudflare setzt ihn selbst – `X-Forwarded-For` ist dort vom Client fälschbar).
 
 ## Warenkorb & Checkout
 - Warenkorb im Browser (`localStorage`, nur Angebots-Kennung + Menge, beim Laden gegen die Inhalte geprüft). Header-Button mit Zähler, Schublade, Kasse unter `/kasse`.
@@ -56,6 +56,14 @@ CSP (nur eigene Quellen, kein Drittanbieter), HSTS, X-Frame-Options DENY, nosnif
 
 ## SEO
 Eigener Title/Description/Canonical/OG/Twitter je Seite, OG-Bild (generiert), `sitemap.xml`, `robots.txt`, JSON-LD (`WebSite`, `Person`, `Service` mit Preis, `FAQPage`, `BreadcrumbList`), genau ein `<h1>` je Seite, `lang="de"`. Impressum/Datenschutz sind `noindex,follow`. Mit `SITE_NOINDEX=true` (Staging) sperrt `robots.txt` alles und alle Seiten sind `noindex`.
+
+## Cloudflare – was geht, was nicht (Stand 19.10.2026)
+| Variante | Geeignet? | Grund |
+|---|---|---|
+| **Cloudflare vor dem Node-Server** (DNS, CDN, WAF, HTTPS, DDoS-Schutz) | **Ja, empfohlen** | Code läuft unverändert auf einem Node-Host (IONOS-Node-Paket, VPS, Container mit Volume). `TRUST_PROXY=cloudflare` setzen, Server nur für Cloudflare-IP-Bereiche öffnen. |
+| **Cloudflare Pages (statisch)** | Nein | Formular, Checkout, Webhook und Backend brauchen einen Server. |
+| **Cloudflare Workers (OpenNext-Adapter)** | Nur mit Umbau | `node:sqlite` gibt es dort nicht (→ D1, Datenzugriff asynchron umschreiben); SMTP über IONOS per `nodemailer` ist auf Workers nicht vorgesehen (→ Mail per HTTP-API oder Cloudflare Email Service); Rate-Limits im Arbeitsspeicher greifen pro Isolate nicht (→ KV/Durable Objects); der Adapter dokumentiert offiziell Next 15, Next 16 ist unbestätigt. |
+| Cloudflare Tunnel zu einem eigenen Rechner/Server | Ja | Für Staging/Tests geeignet; nicht für dauerhaften Betrieb auf einem privaten Rechner. |
 
 ## Staging / Deployment
 Die Seite braucht eine **Node-Umgebung** (wegen API-Route und Header/Redirects), z. B. Node-Hosting, VPS oder Container (`npm ci && npm run build && npm start`). Reiner Apache-/Shared-Webspace ohne Node reicht nicht für das Formular. Für Staging: `SITE_NOINDEX=true`, Zugriffsschutz (Basic-Auth) auf Ebene des Hosters, SMTP leer lassen. **Es wurde nichts deployed und keine DNS-/Live-Änderung vorgenommen.**

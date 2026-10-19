@@ -22,7 +22,8 @@ export function getConfig(env: NodeJS.ProcessEnv = process.env) {
     mode: (smtpReady && env.MAIL_SEND_ENABLED === "true" ? "send" : "dry-run") as "send" | "dry-run",
     rateMax: int(env.RATE_LIMIT_MAX, 5),
     rateWindowMs: int(env.RATE_LIMIT_WINDOW_SECONDS, 900) * 1000,
-    trustProxy: env.TRUST_PROXY === "true",
+    /** false | true (X-Forwarded-For) | "cloudflare" (CF-Connecting-IP – von Cloudflare gesetzt, nicht fälschbar) */
+    trustProxy: (env.TRUST_PROXY === "cloudflare" ? "cloudflare" : env.TRUST_PROXY === "true") as boolean | "cloudflare",
   };
 }
 

@@ -19,9 +19,18 @@ const fail = (status: number, code: string, message: string, extra?: Partial<Api
   body: { ok: false, code, message, fieldErrors: extra?.fieldErrors },
 });
 
-/** Ermittelt einen Schlüssel für das Rate-Limit. Proxy-Header nur, wenn TRUST_PROXY=true. */
-export function clientKey(headers: Headers, trustProxy: boolean): string {
-  if (trustProxy) {
+/**
+ * Ermittelt einen Schlüssel für das Rate-Limit.
+ * - `"cloudflare"`: nur `CF-Connecting-IP` (setzt Cloudflare selbst; Client-Angaben werden überschrieben).
+ *   Voraussetzung: Der Server ist nur über Cloudflare erreichbar.
+ * - `true`: `X-Forwarded-For` (erster Eintrag) bzw. `X-Real-IP` – nur hinter einem Proxy, der diese Header überschreibt.
+ * - sonst: grobe Gruppierung nach Browser-Merkmalen (zusammen mit dem Gesamtdeckel).
+ */
+export function clientKey(headers: Headers, trustProxy: boolean | "cloudflare"): string {
+  if (trustProxy === "cloudflare") {
+    const ip = headers.get("cf-connecting-ip")?.trim();
+    if (ip) return `ip:${ip.slice(0, 64)}`;
+  } else if (trustProxy) {
     const xff = headers.get("x-forwarded-for")?.split(",")[0]?.trim();
     const ip = xff || headers.get("x-real-ip")?.trim();
     if (ip) return `ip:${ip.slice(0, 64)}`;
