@@ -104,7 +104,7 @@ export async function handleContact(request: Request): Promise<ApiResponse> {
   if (storeEnabled()) {
     try {
       const d = parsed.data;
-      inquiryId = insertInquiry({ name: d.name, email: d.email, phone: d.phone, salon: d.salon, topic: d.topic, message: d.message });
+      inquiryId = await insertInquiry({ name: d.name, email: d.email, phone: d.phone, salon: d.salon, topic: d.topic, message: d.message });
     } catch (error) {
       console.error("[contact] Speichern fehlgeschlagen:", error instanceof Error ? error.name : "unknown");
     }
@@ -113,13 +113,13 @@ export async function handleContact(request: Request): Promise<ApiResponse> {
   // 2) Dann Benachrichtigung per Mail
   try {
     const result = await sendContactMail(parsed.data);
-    if (inquiryId !== null) setInquiryMailState(inquiryId, result.mode === "send" ? "gesendet" : "nicht_konfiguriert");
+    if (inquiryId !== null) await setInquiryMailState(inquiryId, result.mode === "send" ? "gesendet" : "nicht_konfiguriert");
     return { status: 200, body: { ok: true, mode: result.mode, stored: inquiryId !== null } };
   } catch (error) {
     // Keine Nutzerdaten ins Log – nur Fehlerklasse.
     console.error("[contact] Versand fehlgeschlagen:", error instanceof Error ? error.name : "unknown");
     if (inquiryId !== null) {
-      setInquiryMailState(inquiryId, "fehlgeschlagen");
+      await setInquiryMailState(inquiryId, "fehlgeschlagen");
       return { status: 200, body: { ok: true, mode: "send", stored: true } }; // gespeichert → Jane sieht sie im Backend
     }
     return fail(502, "mail-failed", "Die Nachricht konnte gerade nicht zugestellt werden. Bitte versuche es später erneut oder ruf mich direkt an.");

@@ -1,7 +1,7 @@
 import { getConfig } from "@/lib/contact/config";
 import { getCheckoutConfig } from "@/lib/checkout/config";
 import { adminConfigured } from "./auth";
-import { dataPath, storeEnabled } from "@/lib/db/db";
+import { dbConfig, dbLabel, storeEnabled } from "@/lib/db/db";
 import { site } from "@/content/site";
 
 export type Check = { label: string; ok: boolean; detail: string };
@@ -12,7 +12,8 @@ export function readiness(env: NodeJS.ProcessEnv = process.env): Check[] {
   const co = getCheckoutConfig(env);
   const key = co.secretKey;
   return [
-    { label: "Formular-Anfragen werden gespeichert", ok: storeEnabled(), detail: storeEnabled() ? `SQLite: ${dataPath(env)}` : "STORE_ENABLED=false – Anfragen gehen nur per Mail ein" },
+    { label: "Formular-Anfragen werden gespeichert", ok: storeEnabled(), detail: storeEnabled() ? `Datenbank: ${dbLabel(env)}` : "STORE_ENABLED=false – Anfragen gehen nur per Mail ein" },
+    { label: "Datenbank dauerhaft (nicht nur lokale Datei auf Serverless)", ok: !dbConfig(env).local || env.VERCEL !== "1", detail: "Auf Vercel/Serverless DATABASE_URL (Turso) setzen – lokale Dateien gehen dort verloren" },
     { label: "E-Mail-Benachrichtigung aktiv", ok: mail.mode === "send", detail: mail.mode === "send" ? `an ${mail.to}` : "SMTP_HOST/CONTACT_FROM fehlen oder MAIL_SEND_ENABLED ist nicht „true“ (Trockenlauf)" },
     { label: "Spam-Schutz-Geheimnis gesetzt (FORM_SECRET)", ok: (env.FORM_SECRET ?? "").length >= 32, detail: "mindestens 32 Zeichen" },
     { label: "Backend-Passwort gesetzt", ok: adminConfigured(env), detail: "ADMIN_PASSWORD_HASH" },

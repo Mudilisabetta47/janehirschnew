@@ -28,9 +28,9 @@ export default async function InquiryDetail({ params, searchParams }: { params: 
   await requireAdmin();
   const { id } = await params;
   const sp = await searchParams;
-  const row = Number.isInteger(Number(id)) ? getInquiry(Number(id)) : undefined;
+  const row = Number.isInteger(Number(id)) ? await getInquiry(Number(id)) : undefined;
   if (!row) notFound();
-  const activity = listActivity("inquiry", row.id);
+  const activity = await listActivity("inquiry", row.id);
 
   return (
     <>

@@ -14,12 +14,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ type: s
   if (type === "anfragen") {
     rows = [
       ["ID", "Eingang", "Name", "E-Mail", "Telefon", "Salon", "Thema", "Nachricht", "Status", "Notiz", "Mail"],
-      ...listInquiries({ limit: 5000 }).map((i) => [i.id, fmtDate(i.created_at), i.name, i.email, i.phone, i.salon, topicLabel(i.topic), i.message, inquiryStatusLabel[i.status], i.notes, i.mail_state]),
+      ...(await listInquiries({ limit: 5000 })).map((i) => [i.id, fmtDate(i.created_at), i.name, i.email, i.phone, i.salon, topicLabel(i.topic), i.message, inquiryStatusLabel[i.status], i.notes, i.mail_state]),
     ];
   } else if (type === "bestellungen") {
     rows = [
       ["ID", "Datum", "Name", "Firma", "E-Mail", "Telefon", "Straße", "PLZ", "Ort", "USt-IdNr.", "Positionen", "Netto €", "MwSt. €", "Brutto €", "Zahlung", "Status", "Wunschzeitraum", "Notiz"],
-      ...listOrders({ limit: 5000 }).map((o) => [
+      ...(await listOrders({ limit: 5000 })).map((o) => [
         o.id, fmtDate(o.created_at), o.name, o.company, o.email, o.phone, o.street, o.zip, o.city, o.vat_id,
         parseOrderItems(o).map((l) => `${l.quantity}x ${l.title}`).join(" | "),
         (o.net_cents / 100).toFixed(2).replace(".", ","), (o.vat_cents / 100).toFixed(2).replace(".", ","), (o.gross_cents / 100).toFixed(2).replace(".", ","),

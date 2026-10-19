@@ -32,7 +32,7 @@ export async function handleStripeWebhook(request: Request, deps: Deps = {}): Pr
     if (store) {
       try {
         // Zuerst dauerhaft speichern (idempotent über die Sitzungs-ID) – Stripe wiederholt bei Fehlern.
-        const r = upsertOrderFromSession(session);
+        const r = await upsertOrderFromSession(session);
         orderId = r.id;
         shouldNotify = r.becamePaid;
       } catch {
@@ -43,19 +43,19 @@ export async function handleStripeWebhook(request: Request, deps: Deps = {}): Pr
     if (shouldNotify) {
       try {
         const state = await (deps.notify ?? sendBookingMail)(session);
-        if (orderId !== null) setOrderMailState(orderId, state === "send" ? "gesendet" : "nicht_konfiguriert");
+        if (orderId !== null) await setOrderMailState(orderId, state === "send" ? "gesendet" : "nicht_konfiguriert");
       } catch {
         // Bestellung ist gespeichert; die Mail ist nur Zusatz. Ohne Speicher: 500 → Stripe wiederholt.
         console.error("[stripe-webhook] Benachrichtigung fehlgeschlagen");
-        if (orderId !== null) setOrderMailState(orderId, "fehlgeschlagen");
+        if (orderId !== null) await setOrderMailState(orderId, "fehlgeschlagen");
         else return { status: 500, body: "notify failed" };
       }
     }
   } else if (event.type === "checkout.session.async_payment_failed" && store) {
-    setOrderPaymentBySession((event.data.object as Stripe.Checkout.Session).id, "failed");
+    await setOrderPaymentBySession((event.data.object as Stripe.Checkout.Session).id, "failed");
   } else if (event.type === "charge.refunded" && store) {
     const pi = (event.data.object as Stripe.Charge).payment_intent;
-    setOrderPaymentByIntent(typeof pi === "string" ? pi : (pi?.id ?? ""), "refunded");
+    await setOrderPaymentByIntent(typeof pi === "string" ? pi : (pi?.id ?? ""), "refunded");
   }
   return { status: 200, body: "ok" };
 }

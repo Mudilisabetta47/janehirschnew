@@ -13,6 +13,7 @@ export default function PrivacyPage() {
       title="Datenschutz"
       lead="Wie mit deinen Daten auf dieser Website umgegangen wird – kurz, verständlich und vollständig."
       todo={[
+        "Hosting-Entscheidung offen: Der Text nennt aktuell IONOS als Hoster. Falls die Seite bei Vercel (mit Turso als Datenbank) läuft, Abschnitt 3 und das Backend-Todo anpassen (Vercel Inc. bzw. Anbieter, Region Frankfurt, AVV, Drittlandübermittlung USA über EU-US-DPF/SCC; Turso als weiterer Auftragsverarbeiter).",
         "Backend (Datenbank auf dem Server): Speicherung von Anfragen und Bestellungen, automatische Löschung erledigter Anfragen nach 180 Tagen, Aufbewahrung von Bestellungen (10 Jahre) und Zugriff nur durch Jane Hirsch – Rechtsgrundlage und Fristen prüfen lassen.",
         "Stripe als Zahlungsdienstleister ist ergänzt (Abschnitt 5): Konto, AV-Vertrag/Verantwortlichkeit und Rechnungseinstellungen klären.",
         "IONOS SE als Hoster und Mailanbieter ist eingetragen (laut Auftraggeber). Offen: Serverstandort/Paket und Speicherdauer der Server-Logfiles aus dem IONOS-Vertrag übernehmen; Auftragsverarbeitungsvertrag (AVV) mit IONOS abschließen bzw. bestätigen.",

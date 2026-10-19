@@ -27,7 +27,7 @@ const idOf = (formData: FormData) => {
 export async function saveInquiryAction(formData: FormData) {
   await requireAdmin();
   const id = idOf(formData);
-  updateInquiry(id, { status: String(formData.get("status") ?? ""), notes: String(formData.get("notes") ?? "") });
+  await updateInquiry(id, { status: String(formData.get("status") ?? ""), notes: String(formData.get("notes") ?? "") });
   revalidatePath("/admin", "layout");
   redirect(`/admin/anfragen/${id}?gespeichert=1`);
 }
@@ -35,7 +35,7 @@ export async function saveInquiryAction(formData: FormData) {
 export async function deleteInquiryAction(formData: FormData) {
   await requireAdmin();
   const id = idOf(formData);
-  if (formData.get("confirm") === "ja") deleteInquiry(id);
+  if (formData.get("confirm") === "ja") await deleteInquiry(id);
   else redirect(`/admin/anfragen/${id}?fehler=bestaetigung`);
   revalidatePath("/admin", "layout");
   redirect("/admin/anfragen?geloescht=1");
@@ -44,7 +44,7 @@ export async function deleteInquiryAction(formData: FormData) {
 export async function saveOrderAction(formData: FormData) {
   await requireAdmin();
   const id = idOf(formData);
-  updateOrder(id, { status: String(formData.get("status") ?? ""), notes: String(formData.get("notes") ?? "") });
+  await updateOrder(id, { status: String(formData.get("status") ?? ""), notes: String(formData.get("notes") ?? "") });
   revalidatePath("/admin", "layout");
   redirect(`/admin/bestellungen/${id}?gespeichert=1`);
 }

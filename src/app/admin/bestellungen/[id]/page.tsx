@@ -15,10 +15,10 @@ export default async function OrderDetail({ params, searchParams }: { params: Pr
   await requireAdmin();
   const { id } = await params;
   const sp = await searchParams;
-  const o = Number.isInteger(Number(id)) ? getOrder(Number(id)) : undefined;
+  const o = Number.isInteger(Number(id)) ? await getOrder(Number(id)) : undefined;
   if (!o) notFound();
   const lines = parseOrderItems(o);
-  const activity = listActivity("order", o.id);
+  const activity = await listActivity("order", o.id);
   const first = (o.name.split(" ")[0] ?? o.name) || "";
   const mail = `mailto:${o.email}?subject=${encodeURIComponent("Deine Buchung bei Jane Hirsch")}&body=${encodeURIComponent(`Hallo ${first},\n\nvielen Dank für deine Buchung! Ich melde mich wegen eines Termins bei dir.\n\nLiebe Grüße\nJane Hirsch\n${site.phone.display}`)}`;
   const stripeUrl = o.payment_intent ? `https://dashboard.stripe.com/${o.livemode ? "" : "test/"}payments/${o.payment_intent}` : null;

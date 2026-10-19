@@ -30,10 +30,8 @@ export default async function AdminHome() {
     );
   }
 
-  const purged = purgeInquiries(RETENTION_DAYS);
-  const s = stats();
-  const inquiries = listInquiries({ limit: 5 });
-  const orders = listOrders({ limit: 5 });
+  const purged = await purgeInquiries(RETENTION_DAYS);
+  const [s, inquiries, orders] = await Promise.all([stats(), listInquiries({ limit: 5 }), listOrders({ limit: 5 })]);
 
   return (
     <>

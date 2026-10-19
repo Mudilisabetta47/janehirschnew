@@ -57,6 +57,19 @@ CSP (nur eigene Quellen, kein Drittanbieter), HSTS, X-Frame-Options DENY, nosnif
 ## SEO
 Eigener Title/Description/Canonical/OG/Twitter je Seite, OG-Bild (generiert), `sitemap.xml`, `robots.txt`, JSON-LD (`WebSite`, `Person`, `Service` mit Preis, `FAQPage`, `BreadcrumbList`), genau ein `<h1>` je Seite, `lang="de"`. Impressum/Datenschutz sind `noindex,follow`. Mit `SITE_NOINDEX=true` (Staging) sperrt `robots.txt` alles und alle Seiten sind `noindex`.
 
+## Hosting-Vergleich (Stand 19.10.2026)
+| | **IONOS Node-Paket / VPS** | **Vercel** (+ Turso) | Cloudflare Workers |
+|---|---|---|---|
+| Passt zum Code? | ja, unverändert | **ja** (Datenbank per `DATABASE_URL`, kein Umbau mehr nötig) | nur mit Umbau |
+| Datenbank | SQLite-Datei auf **dauerhaftem** Datenträger | gehostet (Turso/libSQL; Vercel-Marketplace-Integration) | D1 (Umschreiben) |
+| Mail (SMTP IONOS) | ja | ja (Port 587 ausgehend; Port 25 gesperrt) | nicht vorgesehen |
+| Aufwand Betrieb | selbst: Updates, Backups, Node-Version | gering: Git-Push = Deploy, Vorschau-URLs je Branch | gering, aber Umbau |
+| Kosten | im Paket bzw. VPS-Preis | **Pro-Plan nötig** (Hobby = nur nicht-kommerziell; laut Preisseiten ca. 20 $/Nutzer/Monat – aktuell prüfen) + Turso-Free/Paid | gering |
+| Datenschutz | Anbieter in Deutschland, AVV mit IONOS | US-Anbieter: AVV + EU-US-DPF/SCC mit Vercel **und** Turso; Funktionsregion `fra1` ist in `vercel.json` gesetzt | US-Anbieter |
+| Schwäche | Node-Fähigkeit des Pakets unklar | Rate-Limit pro Instanz im Speicher (für kleines Formular ok; Upstash/Vercel KV als Ausbau) | siehe unten |
+
+Auf Vercel: `TRUST_PROXY=true` setzen (Vercel überschreibt `X-Forwarded-For`), Umgebungsvariablen wie in `.env.example`, Turso-Integration im Marketplace verbinden, Stripe-Webhook auf die Produktions-URL stellen. Die Remote-Anbindung (`libsql://`) nutzt denselben Client und dasselbe SQL wie die lokale Datei, wurde aber ohne Turso-Konto **nicht** gegen eine echte Turso-Datenbank getestet.
+
 ## Cloudflare – was geht, was nicht (Stand 19.10.2026)
 | Variante | Geeignet? | Grund |
 |---|---|---|

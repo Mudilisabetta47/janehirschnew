@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export default async function InquiriesPage({ searchParams }: { searchParams: Promise<{ status?: string; q?: string; geloescht?: string }> }) {
   await requireAdmin();
   const { status, q, geloescht } = await searchParams;
-  const rows = listInquiries({ status, q });
+  const rows = await listInquiries({ status, q });
   return (
     <>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">

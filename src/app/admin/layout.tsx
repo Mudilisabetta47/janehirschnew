@@ -14,7 +14,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   let newOrders = 0;
   if (authed && storeEnabled()) {
     try {
-      const s = stats();
+      const s = await stats();
       newInquiries = s.newInquiries;
       newOrders = s.newOrders;
     } catch {
