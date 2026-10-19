@@ -22,10 +22,10 @@ rsync -az --delete \
   ./ "$VPS_HOST:$REMOTE/app/"
 
 echo "==> 3/4 Abhängigkeiten installieren und bauen (auf dem Server, damit native Module passen)"
-ssh "$VPS_HOST" "sudo -u jane bash -lc 'cd $REMOTE/app && set -a && . $REMOTE/.env && set +a && npm ci --no-audit --no-fund && npm run build'"
+ssh "$VPS_HOST" "sudo -u jane bash -lc 'cd $REMOTE/app && export PATH=$REMOTE/node/bin:\$PATH && set -a && . $REMOTE/.env && set +a && npm ci --no-audit --no-fund && npm run build'"
 
 echo "==> 4/4 Dienst neu starten und prüfen"
 ssh "$VPS_HOST" "sudo systemctl restart jane-hirsch"
 sleep 5
-ssh "$VPS_HOST" "curl -fsS -o /dev/null -w 'Startseite: HTTP %{http_code}\n' http://127.0.0.1:3110/ && curl -fsS -o /dev/null -w 'Backend-Login: HTTP %{http_code}\n' http://127.0.0.1:3110/admin/login"
-echo "Fertig. Test per SSH-Tunnel:  ssh -L 3110:127.0.0.1:3110 $VPS_HOST   →  http://localhost:3110"
+ssh "$VPS_HOST" "set -a && . $REMOTE/.env && set +a && curl -fsS -o /dev/null -w 'Startseite: HTTP %{http_code}\\n' http://\$BIND_HOST:\$APP_PORT/ && curl -fsS -o /dev/null -w 'Backend-Login: HTTP %{http_code}\\n' http://\$BIND_HOST:\$APP_PORT/admin/login"
+echo "Fertig. Test per SSH-Tunnel:  ssh -L 3110:172.19.0.1:3110 $VPS_HOST   →  http://localhost:3110"

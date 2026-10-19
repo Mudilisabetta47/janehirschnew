@@ -1,0 +1,32 @@
+# Caddy-Block für jane-hirsch.de – NUR VORLAGE, wird nicht automatisch eingebunden.
+# Auf dem Server läuft Caddy im Docker-Container (Ports 80/443) mit /etc/caddy/Caddyfile und bedient bereits
+# andere Projekte. Dieser Block ist rein additiv (neue Site-Adressen); bestehende Blöcke bleiben unverändert.
+#
+# Einspielen erst nach Freigabe, mit Sicherung und Validierung VOR dem Reload:
+#   1) Caddyfile sichern (Datei auf dem Host bzw. Mount ermitteln)
+#   2) Block anhängen
+#   3) docker exec <caddy> caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+#   4) docker exec <caddy> caddy reload   --config /etc/caddy/Caddyfile --adapter caddyfile   (graceful, ohne Unterbrechung;
+#      bei Fehler bleibt die alte Konfiguration aktiv)
+# Rückweg: Block entfernen bzw. gesicherte Datei zurück, erneut reload.
+
+# Phase 1 (Staging): Subdomain mit neuem DNS-Eintrag, z. B. staging.jane-hirsch.de
+# Phase 2 (Livegang): jane-hirsch.de, www.jane-hirsch.de – erst nach ausdrücklicher Freigabe + DNS-Umstellung
+staging.jane-hirsch.de {
+	encode zstd gzip
+	reverse_proxy 172.19.0.1:3110 {
+		# Rate-Limit der App liest die erste IP in X-Forwarded-For (TRUST_PROXY=true) – Caddy setzt sie selbst.
+		header_up X-Forwarded-For {remote_host}
+	}
+}
+
+# Livegang (auskommentiert):
+# www.jane-hirsch.de {
+# 	redir https://jane-hirsch.de{uri} permanent
+# }
+# jane-hirsch.de {
+# 	encode zstd gzip
+# 	reverse_proxy 172.19.0.1:3110 {
+# 		header_up X-Forwarded-For {remote_host}
+# 	}
+# }

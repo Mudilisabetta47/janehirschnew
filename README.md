@@ -22,7 +22,7 @@ Produktionsvorschau: `npm run build && npm start`. Alle Prüfungen: `npm run che
 | `04-offene-fragen.md` | **Offene Fragen und fehlende Originalinhalte** |
 | `05-einwilligung-vorlage.md` | Vorlage für die Einwilligung der Teilnehmerinnen (Zitat, Vorname, Foto) |
 | `06-vercel-deployment.md` | Schritt-für-Schritt: Vercel, Turso, Umgebungsvariablen, Stripe-Webhook, Livegang |
-| `07-vps-deployment.md` | Betrieb auf eigenem Ubuntu-VPS (`deploy/vps/`): Einrichtung, Deploy, Staging per SSH-Tunnel, Backup, Livegang-Checkliste |
+| `07-vps-deployment.md` | Betrieb auf dem IONOS-VPS (Caddy/Docker-Befund, `deploy/vps/`): Plan mit Rollback, Deploy, Backup, Livegang-Checkliste |
 
 ## Inhalte pflegen
 Alle Texte, Preise, Kontaktdaten: `src/content/*.ts`. Fotos: Dateien nach `public/images/`, dann in `src/content/images.ts` eintragen. Stimmen: `src/content/testimonials.ts`. Alte URLs: `src/content/redirects.ts`, danach `npm run redirects:export`.

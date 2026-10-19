@@ -1,6 +1,6 @@
 [Unit]
 Description=Jane Hirsch Website (Next.js)
-After=network.target
+After=network-online.target docker.service
 
 [Service]
 Type=simple
@@ -9,7 +9,7 @@ Group=jane
 WorkingDirectory=/srv/jane-hirsch/app
 EnvironmentFile=/srv/jane-hirsch/.env
 Environment=NODE_ENV=production
-ExecStart=/usr/bin/node node_modules/next/dist/bin/next start -p 3110 -H 127.0.0.1
+ExecStart=/srv/jane-hirsch/node/bin/node node_modules/next/dist/bin/next start -p ${APP_PORT} -H ${BIND_HOST}
 Restart=always
 RestartSec=3
 # Härtung: nur Daten und Cache sind beschreibbar
